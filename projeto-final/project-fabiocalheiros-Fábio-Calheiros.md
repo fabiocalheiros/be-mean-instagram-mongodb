@@ -1,6 +1,6 @@
 # MongoDb - Projeto Final
 **Autor:** Fábio Reghim Calheiros
-**Data** 1450143520249
+**Data** 1450837082262
 
 ## Para qual sistema você usaria o MogoDB (diferente desse)?
 
@@ -25,45 +25,50 @@ users: {
 ## Qual a modelagem da sua coleção de `projects`?
 
 projects: {
-	id,
-	name,
-	description,
-	created_time,
-	visible,
+  id,
+  name,
+  description,
+  created_time,
+  visible,
 
-	member : [{
-		user_id
-	}],
+  members : [{
+    id
+  }],
 
-	tags: [],
+  tags: [],
 
-	goals : [{
-		name,
-		description,
-		created_time,
+  goals : [{
+    name,
+    description,
+    created_time,
 
-		tags: []
+    tags: []
 
-		activities: [{
-				name,
-				description,
-				created_time,
+    activities: [{
+      id
+    }]
+  }]
+}
 
-			comments : [{
-				text,
-				date_coment,
-				members: [],
-				file: []
-			}],
+## Qual a modelagem da sua coleção retirada de 'projects'?
 
-			historics: []
-		}]
-	}]
+activities: {
+  id,
+  name,
+  description,
+  created_time,
+
+  comments : [{
+    text,
+    date_coment,
+    members: [],
+    files: []
+  }],
+
+  historics: []
 }
 
 ## Explicação de porque a modelagem foi feita dessa forma
-
-```
 
 Ao meu ver, separando a coleção de usuários de projetos, e criando um relação entre si, é possivel se obeter eficiencia de tempo de resposta melhor.
 Outro ponto positivo é facilidade com que podemos fazer requisições e obter respostas de forma mais simples e organizada.
@@ -72,10 +77,10 @@ Exemplo, buscar todos os projetos de um usuário especifico.
 
 db.projects.find({"member.user_id": ObjectId("566231164d3dcdd17f83d298")})
 
-Caso contrário, não fosse feito dessa forma, uma busca como essa poderia não ser não só mais complicada como isso, como sua performance seria inifinitamente inferior
+Caso contrário, não fosse feito dessa forma, uma busca como essa poderia não ser não só mais complicada como isso, como sua performance seria inifinitamente inferior.
 
-```
-
+Isso vale também para a coleção de atividades, que foi separada devido ao grande numero de inserções que pode ocorrer em um unico projeto.
+Para que a consulta obtesse uma quantidade muito grande de informações ao se requisitar informações do projeto, é aconselhavel separa-la da coleção de projects.
 
 ## Create - cadastro
 
@@ -96,7 +101,7 @@ Caso contrário, não fosse feito dessa forma, uma busca como essa poderia não 
 ... disable: 0
 ... }
 fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.users.save(user1)
-Inserted 1 record(s) in 2ms
+Inserted 1 record(s) in 4ms
 WriteResult({
   "nInserted": 1
 })
@@ -126,7 +131,7 @@ fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var user3 = {
 ... disable: 0
 ... }
 fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.users.save(user3)
-Inserted 1 record(s) in 1ms
+Inserted 1 record(s) in 2ms
 WriteResult({
   "nInserted": 1
 })
@@ -141,7 +146,7 @@ fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var user4 = {
 ... disable: 0
 ... }
 fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.users.save(user4)
-Inserted 1 record(s) in 1ms
+Inserted 1 record(s) in 2ms
 WriteResult({
   "nInserted": 1
 })
@@ -171,7 +176,7 @@ fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var user6 = {
 ... disable: 0
 ... }
 fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.users.save(user6)
-Inserted 1 record(s) in 2ms
+Inserted 1 record(s) in 1ms
 WriteResult({
   "nInserted": 1
 })
@@ -186,7 +191,7 @@ fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var user7 = {
 ... disable: 0
 ... }
 fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.users.save(user7)
-Inserted 1 record(s) in 1ms
+Inserted 1 record(s) in 4ms
 WriteResult({
   "nInserted": 1
 })
@@ -216,7 +221,7 @@ fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var user9 = {
 ... disable: 0
 ... }
 fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.users.save(user9)
-Inserted 1 record(s) in 1ms
+Inserted 1 record(s) in 2ms
 WriteResult({
   "nInserted": 1
 })
@@ -237,252 +242,248 @@ WriteResult({
 })
 
 
-
 ```
 
 ### 2 - Cadastre 5 projetos diferentes.
 
 ```
 
- var project1 = {
-... name: "Projeto 1",
-... description: "projeto Instagram Mongo DB",
-... created_time : Date.now(),
-... visible: 1,
-... 
-... member : [{ user_id: ObjectId("566231164d3dcdd17f83d298")}, { user_id: ObjectId("566231234d3dcdd17f83d299")}, { user_id: ObjectId("566231324d3dcdd17f83d29a")}, { user_id: ObjectId("5662313e4d3dcdd17f83d29b")}, { user_id: ObjectId("5662314e4d3dcdd17f83d29c")}],
-... 
-... tags: ["futebol", "atletico", "galo"],
-... 
-... goals : [{
-... name : "goal inicial",
-... description: "goal do primeiro projeto",
-... created_time : Date.now(),
-... 
-... tags: ["brasil", "america do sul", "galodoido", "vaipracimadelesgalo"],
-... 
-... activities: [{
-... name: "Ativiade 1",
-... description: "description atividade",
-... created_time : Date.now(),
-... 
-... comments : [{
-... text: "Comentário de teste 1",
-... created_time : Date.now(),
-... members: [{ user_id: ObjectId("566231164d3dcdd17f83d298")}, { user_id: ObjectId("566231234d3dcdd17f83d299")}, { user_id: ObjectId("566231324d3dcdd17f83d29a")}],
-... file: []
-... }],
-... 
-... historics: []
-... },
-... {
-... name: "Ativiade 2",
-... description: "description atividade 2",
-... created_time : Date.now(),
-... 
-... comments : [{
-... text: "Comentário de teste post 2",
-... created_time : Date.now(),
-... members: [{ user_id: ObjectId("566231164d3dcdd17f83d298")}, { user_id: ObjectId("566231234d3dcdd17f83d299")}, { user_id: ObjectId("566231324d3dcdd17f83d29a")}],
-... file: []
-... }],
-... 
-... historics: []
-... }
-... ]
-... }]
-... }
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.save(project1)
-Inserted 1 record(s) in 3ms
-WriteResult({
-  "nInserted": 1
-})
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var project2 = {
-... name: "Projeto 2",
-... description: "projeto Instagram Mongo DB 2",
-... created_time : Date.now(),
-... visible: 1,
-... 
-... member : [{ user_id: ObjectId("566231594d3dcdd17f83d29d")}, { user_id: ObjectId("566231644d3dcdd17f83d29e")}, { user_id: ObjectId("566231704d3dcdd17f83d29f")}, { user_id: ObjectId("566231794d3dcdd17f83d2a0")}, { user_id: ObjectId("566231844d3dcdd17f83d2a1")}],
-... 
-... tags: ["futebol", "drink", "galo"],
-... 
-... goals : [{
-... name : "goal 2",
-... description: "goal 2 do projeto",
-... created_time : Date.now(),
-... 
-... tags: ["comida", "gostosa", "brasileira"],
-... 
-... activities: [{
-... name: "Ativiade 1 projeto 2",
-... description: "description atividade 1 projeto 2",
-... created_time : Date.now(),
-... 
-... comments : [{
-... text: "Comentário de teste 1 projeto 2",
-... created_time : Date.now(),
-... members: [{ user_id: ObjectId("566231594d3dcdd17f83d29d")}, { user_id: ObjectId("566231644d3dcdd17f83d29e")}, { user_id: ObjectId("566231794d3dcdd17f83d2a0")}],
-... file: []
-... }],
-... 
-... historics: []
-... },
-... {
-... name: "Ativiade 2",
-... description: "description atividade 2",
-... created_time : Date.now(),
-... 
-... comments : [{
-... text: "Comentário de teste post 2",
-... created_time : Date.now(),
-... members: [{ user_id: ObjectId("566231594d3dcdd17f83d29d")}, { user_id: ObjectId("566231644d3dcdd17f83d29e")}, { user_id: ObjectId("566231794d3dcdd17f83d2a0")}],
-... file: []
-... }],
-... 
-... historics: []
-... }
-... ]
-... }]
-... }
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.save(project2)
-Inserted 1 record(s) in 3ms
-WriteResult({
-  "nInserted": 1
-})
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var project3 = {
-... name: "Projeto 3",
-... description: "projeto Instagram Mongo DB 3",
-... created_time : Date.now(),
-... visible: 1,
-... 
-... member : [{ user_id: ObjectId("566231594d3dcdd17f83d29d")}, { user_id: ObjectId("566231324d3dcdd17f83d29a")}, { user_id: ObjectId("566231704d3dcdd17f83d29f")}, { user_id: ObjectId("566231234d3dcdd17f83d299")}, { user_id: ObjectId("566231844d3dcdd17f83d2a1")}],
-... 
-... tags: ["tag1", "tag2", "futebol"],
-... 
-... goals : [{
-... name : "goal 3",
-... description: "goal 3 do projeto",
-... created_time : Date.now(),
-... 
-... tags: ["goal1", "goal2", "goal3"],
-... 
-... activities: [{
-... name: "Ativiade 1 projeto 3",
-... description: "description atividade 1 projeto 3",
-... created_time : Date.now(),
-... 
-... comments : [{
-... text: "Comentário de teste 1 projeto 3",
-... created_time : Date.now(),
-... members: [{ user_id: ObjectId("566231594d3dcdd17f83d29d")}, { user_id: ObjectId("566231324d3dcdd17f83d29a")}, { user_id: ObjectId("566231704d3dcdd17f83d29f")}],
-... file: []
-... }],
-... 
-... historics: []
-... },
-... {
-... name: "Ativiade 2 do projeto 3",
-... description: "description atividade 3",
-... created_time : Date.now(),
-... 
-... comments : [{
-... text: "Comentário de teste post 3",
-... created_time : Date.now(),
-... members: [{ user_id: ObjectId("566231594d3dcdd17f83d29d")}, { user_id: ObjectId("566231324d3dcdd17f83d29a")}, { user_id: ObjectId("566231704d3dcdd17f83d29f")}],
-... file: []
-... }],
-... 
-... historics: []
-... }
-... ]
-... }]
-... }
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.save(project3)
-Inserted 1 record(s) in 3ms
-WriteResult({
-  "nInserted": 1
-})
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var project4 = {
-... name: "Projeto 4",
-... description: "projeto Instagram Mongo DB 4",
-... created_time : Date.now(),
-... visible: 1,
-... 
-... member : [{ user_id: ObjectId("5662313e4d3dcdd17f83d29b")}, { user_id: ObjectId("566231594d3dcdd17f83d29d")}, { user_id: ObjectId("566231644d3dcdd17f83d29e")}, { user_id: ObjectId("566231704d3dcdd17f83d29f")}, { user_id: ObjectId("566231794d3dcdd17f83d2a0")}],
-... 
-... tags: ["tag4", "tag5", "tag6"],
-... 
-... goals : [{
-... name : "goal 4",
-... description: "goal 4 do projeto",
-... created_time : Date.now(),
-... 
-... tags: ["goal4", "goal5", "goal6"],
-... 
-... activities: [{
-... name: "Ativiade 1 projeto 4",
-... description: "description atividade 1 projeto 4",
-... created_time : Date.now(),
-... 
-... comments : [{
-... text: "Comentário de teste 1 projeto 4",
-... created_time : Date.now(),
-... members: [{ user_id: ObjectId("5662313e4d3dcdd17f83d29b")}, { user_id: ObjectId("566231594d3dcdd17f83d29d")}, { user_id: ObjectId("566231644d3dcdd17f83d29e")}],
-... file: []
-... }],
-... 
-... historics: []
-... },
-... {
-... name: "Ativiade 2 do projeto 3",
-... description: "description atividade 3",
-... created_time : Date.now(),
-... 
-... comments : [{
-... text: "Comentário de teste post 3",
-... created_time : Date.now(),
-... members: [{ user_id: ObjectId("5662313e4d3dcdd17f83d29b")}, { user_id: ObjectId("566231594d3dcdd17f83d29d")}, { user_id: ObjectId("566231644d3dcdd17f83d29e")}],
-... file: []
-... }],
-... 
-... historics: []
-... }
-... ]
-... }]
-... }
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.save(project4)
-Inserted 1 record(s) in 3ms
-WriteResult({
-  "nInserted": 1
-})
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var project5 = {
-... name: "Projeto 5",
-... description: "projeto Instagram Mongo DB 5",
-... created_time : Date.now(),
-... visible: 1,
-... 
-... member : [{ user_id: ObjectId("5662313e4d3dcdd17f83d29b")}, { user_id: ObjectId("566231594d3dcdd17f83d29d")}, { user_id: ObjectId("566231644d3dcdd17f83d29e")}, { user_id: ObjectId("566231704d3dcdd17f83d29f")}, { user_id: ObjectId("566231794d3dcdd17f83d2a0")}],
-... 
-... tags: ["tag7", "tag8", "tag9"],
-... 
-... goals : [{
-... name : "goal 5",
-... description: "goal 5 do projeto",
-... created_time : Date.now(),
-... 
-... tags: ["goal7", "goal8", "goal9"]
-... }]
-... }
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.save(project5)
-Inserted 1 record(s) in 2ms
-WriteResult({
-  "nInserted": 1
-})
+var project1 = {
+  
+  name: "Projeto 1",
+  description: "Descrição do projeto 1",
+  created_time : Date.now(),
+  visible: 1,
 
+  members : [
+    {
+      user_id: ObjectId("5678546da5959e5d4718e58b")
+    },
+    {
+      user_id: ObjectId("56785475a5959e5d4718e58c")
+    },
+    {
+      user_id: ObjectId("5678547da5959e5d4718e58d")
+    },
+    {
+      user_id: ObjectId("56785484a5959e5d4718e58e")
+    },
+    {
+      user_id: ObjectId("5678548ba5959e5d4718e58f")
+    }
+  ],
+
+  tags: ["futebol", "atletico", "galo", "brasil"],
+
+  goals : [{
+    name : "goal inicial",
+    description: "goal do primeiro projeto",
+    created_time : Date.now(),
+
+    tags: ["brasil", "america do sul", "galodoido", "vaipracimadelesgalo"],
+
+    activities: [
+      {
+        "activities_id" : ObjectId("5678749d3c5410e0b73e2825")
+      },
+      {
+        "activities_id" : ObjectId("567874fd3c5410e0b73e2826")
+      }
+    ],
+    historics : []
+  }]
+}
+
+
+var project2 = {
+  
+  name: "Projeto 2",
+  description: "Descrição do projeto 2",
+  created_time : Date.now(),
+  visible: 1,
+
+  members : [
+    {
+      user_id: ObjectId("567854b0a5959e5d4718e594")
+    },
+    {
+      user_id: ObjectId("567854a9a5959e5d4718e593")
+    },
+    {
+      user_id: ObjectId("567854a2a5959e5d4718e592")
+    },
+    {
+      user_id: ObjectId("5678549aa5959e5d4718e591")
+    },
+    {
+      user_id: ObjectId("56785493a5959e5d4718e590")
+    }
+  ],
+
+  tags: ["food", "drink", "truck", "brasil"],
+
+  goals : [{
+    name : "goal food track",
+    description: "goal do segundo projeto",
+    created_time : Date.now(),
+
+    tags: ["goal1", "goal2", "goal3"],
+
+    activities: [
+      {
+        "activities_id" : ObjectId("567875803c5410e0b73e2829")
+      },
+      {
+        "activities_id" : ObjectId("5678749d3c5410e0b73e2825")
+      }
+    ],
+    historics : []
+  }]
+}
+
+
+var project3 = {
+  
+  name: "Projeto 3",
+  description: "Descrição do projeto 3",
+  created_time : Date.now(),
+  visible: 1,
+
+  members : [
+    {
+      user_id: ObjectId("56785475a5959e5d4718e58c")
+    },
+    {
+      user_id: ObjectId("56785484a5959e5d4718e58e")
+    },
+    {
+      user_id: ObjectId("56785493a5959e5d4718e590")
+    },
+    {
+      user_id: ObjectId("567854a2a5959e5d4718e592")
+    },
+    {
+      user_id: ObjectId("567854b0a5959e5d4718e594")
+    }
+  ],
+
+  tags: ["nodejs", "angular", "express", "workshop"],
+
+  goals : [{
+    name : "Be mean",
+    description: "goal do segundo projeto",
+    created_time : Date.now(),
+
+    tags: ["foda", "mongo", "noSql"],
+
+    activities: [
+      {
+        "activities_id" : ObjectId("567875393c5410e0b73e2827")
+      },
+      {
+        "activities_id" : ObjectId("5678755e3c5410e0b73e2828")
+      }
+    ],
+    historics : []
+  }]
+}
+
+
+var project4 = {
+  
+  name: "Projeto 4",
+  description: "Descrição do projeto 4",
+  created_time : Date.now(),
+  visible: 1,
+
+  members : [
+    {
+      user_id: ObjectId("567854a2a5959e5d4718e592")
+    },
+    {
+      user_id: ObjectId("56785493a5959e5d4718e590")
+    },
+    {
+      user_id: ObjectId("56785484a5959e5d4718e58e")
+    },
+    {
+      user_id: ObjectId("5678546da5959e5d4718e58b")
+    },
+    {
+      user_id: ObjectId("56785475a5959e5d4718e58c")
+    }
+  ],
+
+  tags: ["terra", "fogo", "agua", "workshop"],
+
+  goals : [{
+    name : "Pokemons",
+    description: "Pokemon do capeta",
+    created_time : Date.now(),
+
+    tags: ["golpe1", "golpe2", "golpe3"],
+
+    activities: [
+      {
+        "activities_id" : ObjectId("567874fd3c5410e0b73e2826")
+      },
+      {
+        "activities_id" : ObjectId("5678755e3c5410e0b73e2828")
+      }
+    ],
+    historics : []
+  }]
+}
+
+
+var project5 = {
+  
+  name: "Projeto 5",
+  description: "Descrição do projeto 5",
+  created_time : Date.now(),
+  visible: 1,
+
+  members : [
+    {
+      user_id: ObjectId("56785475a5959e5d4718e58c")
+    },
+    {
+      user_id: ObjectId("5678547da5959e5d4718e58d")
+    },
+    {
+      user_id: ObjectId("5678548ba5959e5d4718e58f")
+    },
+    {
+      user_id: ObjectId("5678549aa5959e5d4718e591")
+    },
+    {
+      user_id: ObjectId("567854a2a5959e5d4718e592")
+    }
+  ],
+
+  tags: ["chuva", "sol", "vento", "workshop"],
+
+  goals : [{
+    name : "Goal do tempo",
+    description: "Atmosfera Urbana",
+    created_time : Date.now(),
+
+    tags: ["BH", "RJ", "SP"],
+
+    historics : []
+  }]
+}
+
+
+db.projects.insert(project1)
+db.projects.insert(project2)
+db.projects.insert(project3)
+db.projects.insert(project4)
+db.projects.insert(project5)
 
 
 ```
+
 
 ## Retrieve - busca
 
@@ -492,29 +493,74 @@ WriteResult({
 
 ```
 
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var query = {name: /projeto 1/i}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var fields = {member: 1, _id:0}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.find(query, fields)
-{
-  "member": [
-    {
-      "user_id": ObjectId("566231164d3dcdd17f83d298")
-    },
-    {
-      "user_id": ObjectId("566231234d3dcdd17f83d299")
-    },
-    {
-      "user_id": ObjectId("566231324d3dcdd17f83d29a")
-    },
-    {
-      "user_id": ObjectId("5662313e4d3dcdd17f83d29b")
-    },
-    {
-      "user_id": ObjectId("5662314e4d3dcdd17f83d29c")
-    }
-  ]
-}
-Fetched 1 record(s) in 2ms
+var project = {name: /projeto 1/i}
+var membros = [];
+var getUser = function (usuario) {
+  membros.push(db.users.findOne({ _id: usuario.user_id }))
+};
+var invt = db.projects.findOne();
+invt.members.forEach(getUser);
+membros
+[
+  {
+    "_id": ObjectId("5678546da5959e5d4718e58b"),
+    "type": "user",
+    "dateRegister": 1450726508098,
+    "username": "fabiocalheiros",
+    "full_name": "Fábio Calheiros",
+    "email": "fabiocalheiros@gmail.com",
+    "bio": "Breve descrição",
+    "avatarPath": "https://scontent-mia1-1.xx.fbcdn.net/hphotos-xpa1/v/t1.0-9/1381642_608172905891134_1368571562_n.jpg?oh=72d97e473608fa7907bf4bb4befa9b79&oe=56E46FB5",
+    "password": 1,
+    "lastAcess": 1450726508098,
+    "disable": 0
+  },
+  {
+    "_id": ObjectId("56785475a5959e5d4718e58c"),
+    "type": "user",
+    "dateRegister": 1450726516928,
+    "username": "chicao",
+    "full_name": "Chico Cézar",
+    "email": "todechico@gmail.com",
+    "password": 2,
+    "lastAcess": 1450726516928,
+    "disable": 0
+  },
+  {
+    "_id": ObjectId("5678547da5959e5d4718e58d"),
+    "type": "user",
+    "dateRegister": 1450726524786,
+    "username": "simsim",
+    "full_name": "Simone Costa",
+    "email": "simsim@ig.com.br",
+    "password": 3,
+    "lastAcess": 1450726524786,
+    "disable": 0
+  },
+  {
+    "_id": ObjectId("56785484a5959e5d4718e58e"),
+    "type": "user",
+    "dateRegister": 1450726531801,
+    "username": "skyzito",
+    "full_name": "Diego Bolina",
+    "email": "diego.bolina@gmail.com",
+    "password": 4,
+    "lastAcess": 1450726531801,
+    "disable": 0
+  },
+  {
+    "_id": ObjectId("5678548ba5959e5d4718e58f"),
+    "type": "user",
+    "dateRegister": 1450726538923,
+    "username": "marcosenjoy",
+    "full_name": "Marcos Enjoy",
+    "email": "marcos.enjoy@gmail.com",
+    "password": 5,
+    "lastAcess": 1450726538923,
+    "disable": 0
+  }
+]
+
 
 
 ```
@@ -523,284 +569,40 @@ Fetched 1 record(s) in 2ms
 
 ```
 
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var query = {tags: {$in: [/futebol/i]}}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.find(query)
+var query = {tags: {$in: [/workshop/i]}}
+var fields = {name: 1, tags: 1}
+db.projects.find(query, fields)
 {
-  "_id": ObjectId("56660924661f1e8ea0aec016"),
-  "name": "Projeto 1",
-  "description": "projeto Instagram Mongo DB",
-  "created_time": 1449527584078,
-  "visible": 1,
-  "member": [
-    {
-      "user_id": ObjectId("566231164d3dcdd17f83d298")
-    },
-    {
-      "user_id": ObjectId("566231234d3dcdd17f83d299")
-    },
-    {
-      "user_id": ObjectId("566231324d3dcdd17f83d29a")
-    },
-    {
-      "user_id": ObjectId("5662313e4d3dcdd17f83d29b")
-    },
-    {
-      "user_id": ObjectId("5662314e4d3dcdd17f83d29c")
-    }
-  ],
-  "tags": [
-    "futebol",
-    "atletico",
-    "galo"
-  ],
-  "goals": [
-    {
-      "name": "goal inicial",
-      "description": "goal do primeiro projeto",
-      "created_time": 1449527584078,
-      "tags": [
-        "brasil",
-        "america do sul",
-        "galodoido",
-        "vaipracimadelesgalo"
-      ],
-      "activities": [
-        {
-          "name": "Ativiade 1",
-          "description": "description atividade",
-          "created_time": 1449527584078,
-          "comments": [
-            {
-              "text": "Comentário de teste 1",
-              "created_time": 1449527584078,
-              "members": [
-                {
-                  "user_id": ObjectId("566231164d3dcdd17f83d298")
-                },
-                {
-                  "user_id": ObjectId("566231234d3dcdd17f83d299")
-                },
-                {
-                  "user_id": ObjectId("566231324d3dcdd17f83d29a")
-                }
-              ],
-              "file": [ ]
-            }
-          ],
-          "historics": [ ]
-        },
-        {
-          "name": "Ativiade 2",
-          "description": "description atividade 2",
-          "created_time": 1449527584078,
-          "comments": [
-            {
-              "text": "Comentário de teste post 2",
-              "created_time": 1449527584078,
-              "members": [
-                {
-                  "user_id": ObjectId("566231164d3dcdd17f83d298")
-                },
-                {
-                  "user_id": ObjectId("566231234d3dcdd17f83d299")
-                },
-                {
-                  "user_id": ObjectId("566231324d3dcdd17f83d29a")
-                }
-              ],
-              "file": [ ]
-            }
-          ],
-          "historics": [ ]
-        }
-      ]
-    }
-  ]
-}
-{
-  "_id": ObjectId("5666092f661f1e8ea0aec017"),
-  "name": "Projeto 2",
-  "description": "projeto Instagram Mongo DB 2",
-  "created_time": 1449527596407,
-  "visible": 1,
-  "member": [
-    {
-      "user_id": ObjectId("566231594d3dcdd17f83d29d")
-    },
-    {
-      "user_id": ObjectId("566231644d3dcdd17f83d29e")
-    },
-    {
-      "user_id": ObjectId("566231704d3dcdd17f83d29f")
-    },
-    {
-      "user_id": ObjectId("566231794d3dcdd17f83d2a0")
-    },
-    {
-      "user_id": ObjectId("566231844d3dcdd17f83d2a1")
-    }
-  ],
-  "tags": [
-    "futebol",
-    "drink",
-    "galo"
-  ],
-  "goals": [
-    {
-      "name": "goal 2",
-      "description": "goal 2 do projeto",
-      "created_time": 1449527596407,
-      "tags": [
-        "comida",
-        "gostosa",
-        "brasileira"
-      ],
-      "activities": [
-        {
-          "name": "Ativiade 1 projeto 2",
-          "description": "description atividade 1 projeto 2",
-          "created_time": 1449527596407,
-          "comments": [
-            {
-              "text": "Comentário de teste 1 projeto 2",
-              "created_time": 1449527596407,
-              "members": [
-                {
-                  "user_id": ObjectId("566231594d3dcdd17f83d29d")
-                },
-                {
-                  "user_id": ObjectId("566231644d3dcdd17f83d29e")
-                },
-                {
-                  "user_id": ObjectId("566231794d3dcdd17f83d2a0")
-                }
-              ],
-              "file": [ ]
-            }
-          ],
-          "historics": [ ]
-        },
-        {
-          "name": "Ativiade 2",
-          "description": "description atividade 2",
-          "created_time": 1449527596407,
-          "comments": [
-            {
-              "text": "Comentário de teste post 2",
-              "created_time": 1449527596407,
-              "members": [
-                {
-                  "user_id": ObjectId("566231594d3dcdd17f83d29d")
-                },
-                {
-                  "user_id": ObjectId("566231644d3dcdd17f83d29e")
-                },
-                {
-                  "user_id": ObjectId("566231794d3dcdd17f83d2a0")
-                }
-              ],
-              "file": [ ]
-            }
-          ],
-          "historics": [ ]
-        }
-      ]
-    }
-  ]
-}
-{
-  "_id": ObjectId("5666093e661f1e8ea0aec018"),
+  "_id": ObjectId("56787c433c5410e0b73e282c"),
   "name": "Projeto 3",
-  "description": "projeto Instagram Mongo DB 3",
-  "created_time": 1449527610573,
-  "visible": 1,
-  "member": [
-    {
-      "user_id": ObjectId("566231594d3dcdd17f83d29d")
-    },
-    {
-      "user_id": ObjectId("566231324d3dcdd17f83d29a")
-    },
-    {
-      "user_id": ObjectId("566231704d3dcdd17f83d29f")
-    },
-    {
-      "user_id": ObjectId("566231234d3dcdd17f83d299")
-    },
-    {
-      "user_id": ObjectId("566231844d3dcdd17f83d2a1")
-    }
-  ],
   "tags": [
-    "tag1",
-    "tag2",
-    "futebol"
-  ],
-  "goals": [
-    {
-      "name": "goal 3",
-      "description": "goal 3 do projeto",
-      "created_time": 1449527610573,
-      "tags": [
-        "goal1",
-        "goal2",
-        "goal3"
-      ],
-      "activities": [
-        {
-          "name": "Ativiade 1 projeto 3",
-          "description": "description atividade 1 projeto 3",
-          "created_time": 1449527610573,
-          "comments": [
-            {
-              "text": "Comentário de teste 1 projeto 3",
-              "created_time": 1449527610573,
-              "members": [
-                {
-                  "user_id": ObjectId("566231594d3dcdd17f83d29d")
-                },
-                {
-                  "user_id": ObjectId("566231324d3dcdd17f83d29a")
-                },
-                {
-                  "user_id": ObjectId("566231704d3dcdd17f83d29f")
-                }
-              ],
-              "file": [ ]
-            }
-          ],
-          "historics": [ ]
-        },
-        {
-          "name": "Ativiade 2 do projeto 3",
-          "description": "description atividade 3",
-          "created_time": 1449527610573,
-          "comments": [
-            {
-              "text": "Comentário de teste post 3",
-              "created_time": 1449527610573,
-              "members": [
-                {
-                  "user_id": ObjectId("566231594d3dcdd17f83d29d")
-                },
-                {
-                  "user_id": ObjectId("566231324d3dcdd17f83d29a")
-                },
-                {
-                  "user_id": ObjectId("566231704d3dcdd17f83d29f")
-                }
-              ],
-              "file": [ ]
-            }
-          ],
-          "historics": [ ]
-        }
-      ]
-    }
+    "nodejs",
+    "angular",
+    "express",
+    "workshop"
   ]
 }
-Fetched 3 record(s) in 7ms
-
+{
+  "_id": ObjectId("56787c453c5410e0b73e282d"),
+  "name": "Projeto 4",
+  "tags": [
+    "terra",
+    "fogo",
+    "agua",
+    "workshop"
+  ]
+}
+{
+  "_id": ObjectId("56787c473c5410e0b73e282e"),
+  "name": "Projeto 5",
+  "tags": [
+    "chuva",
+    "sol",
+    "vento",
+    "workshop"
+  ]
+}
+Fetched 3 record(s) in 2ms
 
 ```
 
@@ -808,73 +610,34 @@ Fetched 3 record(s) in 7ms
 
 ```
 
-var query = {}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var fields = {"goals.activities.name": "", _id:0}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.find(query, fields)
-{
-  "goals": [
-    {
-      "activities": [
-        {
-          "name": "Ativiade 1"
-        },
-        {
-          "name": "Ativiade 2"
-        }
-      ]
+var arrayAtividades = [];
+
+var qtd = db.projects.find().length();
+
+var getAtividades = function (atividade) {
+    var invt = db.activities.findOne({ _id: atividade.activities_id });
+    arrayAtividades.push(invt.name);
+};
+
+for (var i = 0; i < qtd; i++) {
+    var project = db.projects.find().skip(i).limit(1).toArray();
+    if (Array.isArray(project[0].goals[0].activities)) {
+        project[0].goals[0].activities.forEach(getAtividades);
     }
-  ]
 }
-{
-  "goals": [
-    {
-      "activities": [
-        {
-          "name": "Ativiade 1 projeto 2"
-        },
-        {
-          "name": "Ativiade 2"
-        }
-      ]
-    }
-  ]
-}
-{
-  "goals": [
-    {
-      "activities": [
-        {
-          "name": "Ativiade 1 projeto 3"
-        },
-        {
-          "name": "Ativiade 2 do projeto 3"
-        }
-      ]
-    }
-  ]
-}
-{
-  "goals": [
-    {
-      
-    }
-  ]
-}
-{
-  "goals": [
-    {
-      "activities": [
-        {
-          "name": "Ativiade 1 projeto 4"
-        },
-        {
-          "name": "Ativiade 2 do projeto 3"
-        }
-      ]
-    }
-  ]
-}
-Fetched 5 record(s) in 3ms
+
+
+fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> arrayAtividades
+[
+  "Ativiade 1",
+  "Ativiade 2",
+  "Ativiade 5",
+  "Ativiade 1",
+  "Ativiade 3",
+  "Ativiade 4",
+  "Ativiade 2",
+  "Ativiade 4"
+]
 
 
 ```
@@ -883,8 +646,51 @@ Fetched 5 record(s) in 3ms
 
 ```
 
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.find( { tags: { $exists: false } } )
-Fetched 0 record(s) in 1ms
+var query = {tags: {$nin: ['galo']}}
+var fields = {tags: 1, name: 1}
+db.projects.find(query, fields)
+{
+  "_id": ObjectId("56787c403c5410e0b73e282b"),
+  "name": "Projeto 2",
+  "tags": [
+    "food",
+    "drink",
+    "truck",
+    "brasil"
+  ]
+}
+{
+  "_id": ObjectId("56787c433c5410e0b73e282c"),
+  "name": "Projeto 3",
+  "tags": [
+    "nodejs",
+    "angular",
+    "express",
+    "workshop"
+  ]
+}
+{
+  "_id": ObjectId("56787c453c5410e0b73e282d"),
+  "name": "Projeto 4",
+  "tags": [
+    "terra",
+    "fogo",
+    "agua",
+    "workshop"
+  ]
+}
+{
+  "_id": ObjectId("56787c473c5410e0b73e282e"),
+  "name": "Projeto 5",
+  "tags": [
+    "chuva",
+    "sol",
+    "vento",
+    "workshop"
+  ]
+}
+Fetched 4 record(s) in 2ms
+
 
 ```
 
@@ -892,87 +698,74 @@ Fetched 0 record(s) in 1ms
 
 ```
 
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var query = {}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var fields = {_id:1}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var idPrimeiro = db.projects.findOne({ }, fields)
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> 
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var fildsMembers = {member: 1, _id: 0}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> 
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var usuariosPrimeiroProjeto = db.projects.find(idPrimeiro, fildsMembers);
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> 
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var arrFinal = []
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> 
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> for (var member in usuariosPrimeiroProjeto[0].member) {
-...    if (usuariosPrimeiroProjeto[0].member.hasOwnProperty(member)) {
-...       var obj = usuariosPrimeiroProjeto[0].member[member];
-...        
-...         for (var user_id in obj) {
-...           if(obj.hasOwnProperty(user_id)){
-...              arrFinal.push(obj[user_id]);
-...           }
-...        }
-...     }
-... }
-5
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> 
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var query = {_id: {$nin: arrFinal}}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.users.find(query)
+var primeiro = db.projects.findOne();
+var membros = [];
+
+var getMembro = function (member) {
+    var invt = db.users.findOne({ _id: member.user_id });
+    membros.push(invt._id);
+};
+
+primeiro.members.forEach(getMembro);
+
+db.users.find({_id: { $not: { $in: membros }}})
+
 {
-  "_id": ObjectId("566231594d3dcdd17f83d29d"),
+  "_id": ObjectId("56785493a5959e5d4718e590"),
   "type": "user",
-  "dateRegister": 1449275734435,
+  "dateRegister": 1450726547025,
   "username": "bambirra",
   "full_name": "Matheus Menezes",
   "email": "menezesdebambirra@gmail.com",
   "password": 6,
-  "lastAcess": 1449275734435,
+  "lastAcess": 1450726547025,
   "disable": 0
 }
 {
-  "_id": ObjectId("566231644d3dcdd17f83d29e"),
+  "_id": ObjectId("5678549aa5959e5d4718e591"),
   "type": "user",
-  "dateRegister": 1449275745216,
+  "dateRegister": 1450726553707,
   "username": "luizfelipe",
   "full_name": "Luiz Felipe",
   "email": "luiz.felipe@gmail.com",
   "password": 7,
-  "lastAcess": 1449275745216,
+  "lastAcess": 1450726553707,
   "disable": 0
 }
 {
-  "_id": ObjectId("566231704d3dcdd17f83d29f"),
+  "_id": ObjectId("567854a2a5959e5d4718e592"),
   "type": "user",
-  "dateRegister": 1449275757329,
+  "dateRegister": 1450726561360,
   "username": "lele84",
   "full_name": "Alessandra Negrine",
   "email": "lele.negrine@gmail.com",
   "password": 8,
-  "lastAcess": 1449275757329,
+  "lastAcess": 1450726561360,
   "disable": 0
 }
 {
-  "_id": ObjectId("566231794d3dcdd17f83d2a0"),
+  "_id": ObjectId("567854a9a5959e5d4718e593"),
   "type": "user",
-  "dateRegister": 1449275767219,
+  "dateRegister": 1450726568154,
   "username": "matheusaraujo",
   "full_name": "Mateus Vireira",
   "email": "ocarala@gmail.com",
   "password": 9,
-  "lastAcess": 1449275767219,
+  "lastAcess": 1450726568154,
   "disable": 0
 }
 {
-  "_id": ObjectId("566231844d3dcdd17f83d2a1"),
+  "_id": ObjectId("567854b0a5959e5d4718e594"),
   "type": "user",
-  "dateRegister": 1449275777145,
+  "dateRegister": 1450726575632,
   "username": "usermagic",
   "full_name": "Usário Mágico",
   "email": "magic@gmail.com",
   "password": 10,
-  "lastAcess": 1449275777145,
+  "lastAcess": 1450726575632,
   "disable": 0
 }
-Fetched 5 record(s) in 3ms
+Fetched 5 record(s) in 2ms
 
 
 ```
@@ -983,429 +776,10 @@ Fetched 5 record(s) in 3ms
 
 ```
 
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var query = {}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var mod = {$set: {views: 0}}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var options = {multi: true}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.update(query, mod, options)
-Updated 5 existing record(s) in 25ms
-WriteResult({
-  "nMatched": 5,
-  "nUpserted": 0,
-  "nModified": 5
-})
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.find()
-{
-  "_id": ObjectId("56660924661f1e8ea0aec016"),
-  "name": "Projeto 1",
-  "description": "projeto Instagram Mongo DB",
-  "created_time": 1449527584078,
-  "visible": 1,
-  "member": [
-    {
-      "user_id": ObjectId("566231164d3dcdd17f83d298")
-    },
-    {
-      "user_id": ObjectId("566231234d3dcdd17f83d299")
-    },
-    {
-      "user_id": ObjectId("566231324d3dcdd17f83d29a")
-    },
-    {
-      "user_id": ObjectId("5662313e4d3dcdd17f83d29b")
-    },
-    {
-      "user_id": ObjectId("5662314e4d3dcdd17f83d29c")
-    }
-  ],
-  "tags": [
-    "futebol",
-    "atletico",
-    "galo"
-  ],
-  "goals": [
-    {
-      "name": "goal inicial",
-      "description": "goal do primeiro projeto",
-      "created_time": 1449527584078,
-      "tags": [
-        "brasil",
-        "america do sul",
-        "galodoido",
-        "vaipracimadelesgalo"
-      ],
-      "activities": [
-        {
-          "name": "Ativiade 1",
-          "description": "description atividade",
-          "created_time": 1449527584078,
-          "comments": [
-            {
-              "text": "Comentário de teste 1",
-              "created_time": 1449527584078,
-              "members": [
-                {
-                  "user_id": ObjectId("566231164d3dcdd17f83d298")
-                },
-                {
-                  "user_id": ObjectId("566231234d3dcdd17f83d299")
-                },
-                {
-                  "user_id": ObjectId("566231324d3dcdd17f83d29a")
-                }
-              ],
-              "file": [ ]
-            }
-          ],
-          "historics": [ ]
-        },
-        {
-          "name": "Ativiade 2",
-          "description": "description atividade 2",
-          "created_time": 1449527584078,
-          "comments": [
-            {
-              "text": "Comentário de teste post 2",
-              "created_time": 1449527584078,
-              "members": [
-                {
-                  "user_id": ObjectId("566231164d3dcdd17f83d298")
-                },
-                {
-                  "user_id": ObjectId("566231234d3dcdd17f83d299")
-                },
-                {
-                  "user_id": ObjectId("566231324d3dcdd17f83d29a")
-                }
-              ],
-              "file": [ ]
-            }
-          ],
-          "historics": [ ]
-        }
-      ]
-    }
-  ],
-  "views": 0
-}
-{
-  "_id": ObjectId("5666092f661f1e8ea0aec017"),
-  "name": "Projeto 2",
-  "description": "projeto Instagram Mongo DB 2",
-  "created_time": 1449527596407,
-  "visible": 1,
-  "member": [
-    {
-      "user_id": ObjectId("566231594d3dcdd17f83d29d")
-    },
-    {
-      "user_id": ObjectId("566231644d3dcdd17f83d29e")
-    },
-    {
-      "user_id": ObjectId("566231704d3dcdd17f83d29f")
-    },
-    {
-      "user_id": ObjectId("566231794d3dcdd17f83d2a0")
-    },
-    {
-      "user_id": ObjectId("566231844d3dcdd17f83d2a1")
-    }
-  ],
-  "tags": [
-    "futebol",
-    "drink",
-    "galo"
-  ],
-  "goals": [
-    {
-      "name": "goal 2",
-      "description": "goal 2 do projeto",
-      "created_time": 1449527596407,
-      "tags": [
-        "comida",
-        "gostosa",
-        "brasileira"
-      ],
-      "activities": [
-        {
-          "name": "Ativiade 1 projeto 2",
-          "description": "description atividade 1 projeto 2",
-          "created_time": 1449527596407,
-          "comments": [
-            {
-              "text": "Comentário de teste 1 projeto 2",
-              "created_time": 1449527596407,
-              "members": [
-                {
-                  "user_id": ObjectId("566231594d3dcdd17f83d29d")
-                },
-                {
-                  "user_id": ObjectId("566231644d3dcdd17f83d29e")
-                },
-                {
-                  "user_id": ObjectId("566231794d3dcdd17f83d2a0")
-                }
-              ],
-              "file": [ ]
-            }
-          ],
-          "historics": [ ]
-        },
-        {
-          "name": "Ativiade 2",
-          "description": "description atividade 2",
-          "created_time": 1449527596407,
-          "comments": [
-            {
-              "text": "Comentário de teste post 2",
-              "created_time": 1449527596407,
-              "members": [
-                {
-                  "user_id": ObjectId("566231594d3dcdd17f83d29d")
-                },
-                {
-                  "user_id": ObjectId("566231644d3dcdd17f83d29e")
-                },
-                {
-                  "user_id": ObjectId("566231794d3dcdd17f83d2a0")
-                }
-              ],
-              "file": [ ]
-            }
-          ],
-          "historics": [ ]
-        }
-      ]
-    }
-  ],
-  "views": 0
-}
-{
-  "_id": ObjectId("5666093e661f1e8ea0aec018"),
-  "name": "Projeto 3",
-  "description": "projeto Instagram Mongo DB 3",
-  "created_time": 1449527610573,
-  "visible": 1,
-  "member": [
-    {
-      "user_id": ObjectId("566231594d3dcdd17f83d29d")
-    },
-    {
-      "user_id": ObjectId("566231324d3dcdd17f83d29a")
-    },
-    {
-      "user_id": ObjectId("566231704d3dcdd17f83d29f")
-    },
-    {
-      "user_id": ObjectId("566231234d3dcdd17f83d299")
-    },
-    {
-      "user_id": ObjectId("566231844d3dcdd17f83d2a1")
-    }
-  ],
-  "tags": [
-    "tag1",
-    "tag2",
-    "futebol"
-  ],
-  "goals": [
-    {
-      "name": "goal 3",
-      "description": "goal 3 do projeto",
-      "created_time": 1449527610573,
-      "tags": [
-        "goal1",
-        "goal2",
-        "goal3"
-      ],
-      "activities": [
-        {
-          "name": "Ativiade 1 projeto 3",
-          "description": "description atividade 1 projeto 3",
-          "created_time": 1449527610573,
-          "comments": [
-            {
-              "text": "Comentário de teste 1 projeto 3",
-              "created_time": 1449527610573,
-              "members": [
-                {
-                  "user_id": ObjectId("566231594d3dcdd17f83d29d")
-                },
-                {
-                  "user_id": ObjectId("566231324d3dcdd17f83d29a")
-                },
-                {
-                  "user_id": ObjectId("566231704d3dcdd17f83d29f")
-                }
-              ],
-              "file": [ ]
-            }
-          ],
-          "historics": [ ]
-        },
-        {
-          "name": "Ativiade 2 do projeto 3",
-          "description": "description atividade 3",
-          "created_time": 1449527610573,
-          "comments": [
-            {
-              "text": "Comentário de teste post 3",
-              "created_time": 1449527610573,
-              "members": [
-                {
-                  "user_id": ObjectId("566231594d3dcdd17f83d29d")
-                },
-                {
-                  "user_id": ObjectId("566231324d3dcdd17f83d29a")
-                },
-                {
-                  "user_id": ObjectId("566231704d3dcdd17f83d29f")
-                }
-              ],
-              "file": [ ]
-            }
-          ],
-          "historics": [ ]
-        }
-      ]
-    }
-  ],
-  "views": 0
-}
-{
-  "_id": ObjectId("56660958661f1e8ea0aec01a"),
-  "name": "Projeto 5",
-  "description": "projeto Instagram Mongo DB 5",
-  "created_time": 1449527637133,
-  "visible": 1,
-  "member": [
-    {
-      "user_id": ObjectId("5662313e4d3dcdd17f83d29b")
-    },
-    {
-      "user_id": ObjectId("566231594d3dcdd17f83d29d")
-    },
-    {
-      "user_id": ObjectId("566231644d3dcdd17f83d29e")
-    },
-    {
-      "user_id": ObjectId("566231704d3dcdd17f83d29f")
-    },
-    {
-      "user_id": ObjectId("566231794d3dcdd17f83d2a0")
-    }
-  ],
-  "tags": [
-    "tag7",
-    "tag8",
-    "tag9"
-  ],
-  "goals": [
-    {
-      "name": "goal 5",
-      "description": "goal 5 do projeto",
-      "created_time": 1449527637133,
-      "tags": [
-        "goal7",
-        "goal8",
-        "goal9"
-      ]
-    }
-  ],
-  "views": 0
-}
-{
-  "_id": ObjectId("5666094e661f1e8ea0aec019"),
-  "name": "Projeto 4",
-  "description": "projeto Instagram Mongo DB 4",
-  "created_time": 1449527623979,
-  "visible": 1,
-  "member": [
-    {
-      "user_id": ObjectId("5662313e4d3dcdd17f83d29b")
-    },
-    {
-      "user_id": ObjectId("566231594d3dcdd17f83d29d")
-    },
-    {
-      "user_id": ObjectId("566231644d3dcdd17f83d29e")
-    },
-    {
-      "user_id": ObjectId("566231704d3dcdd17f83d29f")
-    },
-    {
-      "user_id": ObjectId("566231794d3dcdd17f83d2a0")
-    }
-  ],
-  "tags": [
-    "tag4",
-    "tag5",
-    "tag6"
-  ],
-  "goals": [
-    {
-      "name": "goal 4",
-      "description": "goal 4 do projeto",
-      "created_time": 1449527623979,
-      "tags": [
-        "goal4",
-        "goal5",
-        "goal6"
-      ],
-      "activities": [
-        {
-          "name": "Ativiade 1 projeto 4",
-          "description": "description atividade 1 projeto 4",
-          "created_time": 1449527623979,
-          "comments": [
-            {
-              "text": "Comentário de teste 1 projeto 4",
-              "created_time": 1449527623979,
-              "members": [
-                {
-                  "user_id": ObjectId("5662313e4d3dcdd17f83d29b")
-                },
-                {
-                  "user_id": ObjectId("566231594d3dcdd17f83d29d")
-                },
-                {
-                  "user_id": ObjectId("566231644d3dcdd17f83d29e")
-                }
-              ],
-              "file": [ ]
-            }
-          ],
-          "historics": [ ]
-        },
-        {
-          "name": "Ativiade 2 do projeto 3",
-          "description": "description atividade 3",
-          "created_time": 1449527623979,
-          "comments": [
-            {
-              "text": "Comentário de teste post 3",
-              "created_time": 1449527623979,
-              "members": [
-                {
-                  "user_id": ObjectId("5662313e4d3dcdd17f83d29b")
-                },
-                {
-                  "user_id": ObjectId("566231594d3dcdd17f83d29d")
-                },
-                {
-                  "user_id": ObjectId("566231644d3dcdd17f83d29e")
-                }
-              ],
-              "file": [ ]
-            }
-          ],
-          "historics": [ ]
-        }
-      ]
-    }
-  ],
-  "views": 0
-}
-Fetched 5 record(s) in 14ms
+var query = {}
+var mod = {$set: {views: 0}}
+var options = {multi: true}
+db.projects.update(query, mod, options)
 
 
 ```
@@ -1414,55 +788,69 @@ Fetched 5 record(s) in 14ms
 
 ```
 
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var query = {_id: ObjectId("56660924661f1e8ea0aec016")}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var mod = {$push: {tags: 'tagdiferente1'}}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.update(query, mod)
-Updated 1 existing record(s) in 2ms
-WriteResult({
-  "nMatched": 1,
-  "nUpserted": 0,
-  "nModified": 1
-})
+for (var i = 0; i < 5; i++) {
+    var project = db.projects.find().skip(i).limit(1).toArray();
+    var newTag = "Tag "+ i;
+    db.projects.update({_id: project[0]._id}, {$push: { tags: newTag } })
+}
 
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var query = {_id: ObjectId("5666092f661f1e8ea0aec017")}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var mod = {$push: {tags: 'tagdiferente2'}}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.update(query, mod)
-Updated 1 existing record(s) in 0ms
-WriteResult({
-  "nMatched": 1,
-  "nUpserted": 0,
-  "nModified": 1
-})
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> 
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var query = {_id: ObjectId("5666093e661f1e8ea0aec018")}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var mod = {$push: {tags: 'tagdiferente3'}}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.update(query, mod)
-Updated 1 existing record(s) in 1ms
-WriteResult({
-  "nMatched": 1,
-  "nUpserted": 0,
-  "nModified": 1
-})
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> 
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var query = {_id: ObjectId("56660958661f1e8ea0aec01a")}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var mod = {$push: {tags: 'tagdiferente4'}}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.update(query, mod)
-Updated 1 existing record(s) in 1ms
-WriteResult({
-  "nMatched": 1,
-  "nUpserted": 0,
-  "nModified": 1
-})
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> 
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var query = {_id: ObjectId("5666094e661f1e8ea0aec019")}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var mod = {$push: {tags: 'tagdiferente5'}}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.update(query, mod)
-Updated 1 existing record(s) in 2ms
-WriteResult({
-  "nMatched": 1,
-  "nUpserted": 0,
-  "nModified": 1
-})
+ db.projects.find({}, {name:1, tags:1})
+{
+  "_id": ObjectId("56787c3d3c5410e0b73e282a"),
+  "name": "Projeto 1",
+  "tags": [
+    "futebol",
+    "atletico",
+    "galo",
+    "brasil",
+    "Tag 0"
+  ]
+}
+{
+  "_id": ObjectId("56787c403c5410e0b73e282b"),
+  "name": "Projeto 2",
+  "tags": [
+    "food",
+    "drink",
+    "truck",
+    "brasil",
+    "Tag 1"
+  ]
+}
+{
+  "_id": ObjectId("56787c433c5410e0b73e282c"),
+  "name": "Projeto 3",
+  "tags": [
+    "nodejs",
+    "angular",
+    "express",
+    "workshop",
+    "Tag 2"
+  ]
+}
+{
+  "_id": ObjectId("56787c453c5410e0b73e282d"),
+  "name": "Projeto 4",
+  "tags": [
+    "terra",
+    "fogo",
+    "agua",
+    "workshop",
+    "Tag 3"
+  ]
+}
+{
+  "_id": ObjectId("56787c473c5410e0b73e282e"),
+  "name": "Projeto 5",
+  "tags": [
+    "chuva",
+    "sol",
+    "vento",
+    "workshop",
+    "Tag 4"
+  ]
+}
+Fetched 5 record(s) in 2ms
 
 
 ```
@@ -1470,165 +858,34 @@ WriteResult({
 
 ```
 
-
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var query = {_id: ObjectId("56660924661f1e8ea0aec016")}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> 
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var usuarios = [{"user_id": ObjectId("566231594d3dcdd17f83d29d")}, {"user_id": ObjectId("566231644d3dcdd17f83d29e")}]
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> 
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var mod = {$pushAll: {member: usuarios}}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.update(query, mod)
-Updated 1 existing record(s) in 5ms
-WriteResult({
-  "nMatched": 1,
-  "nUpserted": 0,
-  "nModified": 1
-})
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.find(query)
-{
-  "_id": ObjectId("56660924661f1e8ea0aec016"),
-  "name": "Projeto 1",
-  "description": "projeto Instagram Mongo DB",
-  "created_time": 1449527584078,
-  "visible": 1,
-  "member": [
-    {
-      "user_id": ObjectId("566231164d3dcdd17f83d298")
-    },
-    {
-      "user_id": ObjectId("566231234d3dcdd17f83d299")
-    },
-    {
-      "user_id": ObjectId("566231324d3dcdd17f83d29a")
-    },
-    {
-      "user_id": ObjectId("5662313e4d3dcdd17f83d29b")
-    },
-    {
-      "user_id": ObjectId("5662314e4d3dcdd17f83d29c")
-    },
-    {
-      "user_id": ObjectId("566231594d3dcdd17f83d29d")
-    },
-    {
-      "user_id": ObjectId("566231644d3dcdd17f83d29e")
-    }
-  ],
-  "tags": [
-    "futebol",
-    "atletico",
-    "galo",
-    "tagdiferente1"
-  ],
-  "goals": [
-    {
-      "name": "goal inicial",
-      "description": "goal do primeiro projeto",
-      "created_time": 1449527584078,
-      "tags": [
-        "brasil",
-        "america do sul",
-        "galodoido",
-        "vaipracimadelesgalo"
-      ],
-      "activities": [
-        {
-          "name": "Ativiade 1",
-          "description": "description atividade",
-          "created_time": 1449527584078,
-          "comments": [
-            {
-              "text": "Comentário de teste 1",
-              "created_time": 1449527584078,
-              "members": [
-                {
-                  "user_id": ObjectId("566231164d3dcdd17f83d298")
-                },
-                {
-                  "user_id": ObjectId("566231234d3dcdd17f83d299")
-                },
-                {
-                  "user_id": ObjectId("566231324d3dcdd17f83d29a")
-                }
-              ],
-              "file": [ ]
-            }
-          ],
-          "historics": [ ]
-        },
-        {
-          "name": "Ativiade 2",
-          "description": "description atividade 2",
-          "created_time": 1449527584078,
-          "comments": [
-            {
-              "text": "Comentário de teste post 2",
-              "created_time": 1449527584078,
-              "members": [
-                {
-                  "user_id": ObjectId("566231164d3dcdd17f83d298")
-                },
-                {
-                  "user_id": ObjectId("566231234d3dcdd17f83d299")
-                },
-                {
-                  "user_id": ObjectId("566231324d3dcdd17f83d29a")
-                }
-              ],
-              "file": [ ]
-            }
-          ],
-          "historics": [ ]
-        }
-      ]
-    }
-  ],
-  "views": 0
-}
-Fetched 1 record(s) in 3ms
+var query = {_id: ObjectId("56787c3d3c5410e0b73e282a")}
+var usuarios = [{"user_id": ObjectId("56789d723c5410e0b73e282f")}, {"user_id": ObjectId("56789d833c5410e0b73e2830")}]
+var mod = {$pushAll: {members: usuarios}}
+db.projects.update(query, mod)
 
 
+var query = {_id: ObjectId("56787c403c5410e0b73e282b")}
+var usuarios = [{"user_id": ObjectId("56789d913c5410e0b73e2831")}, {"user_id": ObjectId("56789d9d3c5410e0b73e2832")}]
+var mod = {$pushAll: {members: usuarios}}
+db.projects.update(query, mod)
 
 
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var query = {_id: ObjectId("5666092f661f1e8ea0aec017")}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var usuarios = [{"user_id": ObjectId("566231164d3dcdd17f83d298")}, {"user_id": ObjectId("566231234d3dcdd17f83d299")}]
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var mod = {$pushAll: {member: usuarios}}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.update(query, mod)
-Updated 1 existing record(s) in 2ms
-WriteResult({
-  "nMatched": 1,
-  "nUpserted": 0,
-  "nModified": 1
-})
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var query = {_id: ObjectId("5666093e661f1e8ea0aec018")}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var usuarios = [{"user_id": ObjectId("566231794d3dcdd17f83d2a0")}, {"user_id": ObjectId("566231644d3dcdd17f83d29e")}]
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var mod = {$pushAll: {member: usuarios}}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.update(query, mod)
-Updated 1 existing record(s) in 1ms
-WriteResult({
-  "nMatched": 1,
-  "nUpserted": 0,
-  "nModified": 1
-})
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var query = {_id: ObjectId("56660958661f1e8ea0aec01a")}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var usuarios = [{"user_id": ObjectId("566231234d3dcdd17f83d299")}, {"user_id": ObjectId("566231164d3dcdd17f83d298")}]
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var mod = {$pushAll: {member: usuarios}}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.update(query, mod)
-Updated 1 existing record(s) in 2ms
-WriteResult({
-  "nMatched": 1,
-  "nUpserted": 0,
-  "nModified": 1
-})
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var query = {_id: ObjectId("5666094e661f1e8ea0aec019")}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var usuarios = [{"user_id": ObjectId("566231164d3dcdd17f83d298")}, {"user_id": ObjectId("566231844d3dcdd17f83d2a1")}]
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var mod = {$pushAll: {member: usuarios}}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.update(query, mod)
-Updated 1 existing record(s) in 2ms
-WriteResult({
-  "nMatched": 1,
-  "nUpserted": 0,
-  "nModified": 1
-})
+var query = {_id: ObjectId("56787c433c5410e0b73e282c")}
+var usuarios = [{"user_id": ObjectId("56789da93c5410e0b73e2833")}, {"user_id": ObjectId("56789db73c5410e0b73e2834")}]
+var mod = {$pushAll: {members: usuarios}}
+db.projects.update(query, mod)
+
+
+var query = {_id: ObjectId("56787c453c5410e0b73e282d")}
+var usuarios = [{"user_id": ObjectId("56789dc53c5410e0b73e2835")}, {"user_id": ObjectId("56789dd23c5410e0b73e2836")}]
+var mod = {$pushAll: {members: usuarios}}
+db.projects.update(query, mod)
+
+
+var query = {_id: ObjectId("56787c473c5410e0b73e282e")}
+var usuarios = [{"user_id": ObjectId("56789de13c5410e0b73e2837")}, {"user_id": ObjectId("56789df03c5410e0b73e2838")}]
+var mod = {$pushAll: {members: usuarios}}
+db.projects.update(query, mod)
 
 
 ```
@@ -1636,393 +893,37 @@ WriteResult({
 
 ```
 
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var query = {"_id": ObjectId("56660924661f1e8ea0aec016") }
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var mod = { $push: 
-...   {"goals.0.activities.0.comments": 
-...     {
-...       "text": "Comentario do projeto 1 inserido depois",
-...       "created_time": Date.now(),
-...       "members": [{"user_id": ObjectId("5662313e4d3dcdd17f83d29b")}]
-...     }
-...   }
-... }
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> 
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var options = {upsert: true}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.update(query, mod, options)
-Updated 1 existing record(s) in 2ms
-WriteResult({
-  "nMatched": 1,
-  "nUpserted": 0,
-  "nModified": 1
-})
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.find(query)
-{
-  "_id": ObjectId("56660924661f1e8ea0aec016"),
-  "name": "Projeto 1",
-  "description": "projeto Instagram Mongo DB",
-  "created_time": 1449527584078,
-  "visible": 1,
-  "member": [
-    {
-      "user_id": ObjectId("566231164d3dcdd17f83d298")
-    },
-    {
-      "user_id": ObjectId("566231234d3dcdd17f83d299")
-    },
-    {
-      "user_id": ObjectId("566231324d3dcdd17f83d29a")
-    },
-    {
-      "user_id": ObjectId("5662313e4d3dcdd17f83d29b")
-    },
-    {
-      "user_id": ObjectId("5662314e4d3dcdd17f83d29c")
-    },
-    {
-      "user_id": ObjectId("566231594d3dcdd17f83d29d")
-    },
-    {
-      "user_id": ObjectId("566231644d3dcdd17f83d29e")
-    }
-  ],
-  "tags": [
-    "futebol",
-    "atletico",
-    "galo",
-    "tagdiferente1"
-  ],
-  "goals": [
-    {
-      "name": "goal inicial",
-      "description": "goal do primeiro projeto",
-      "created_time": 1449527584078,
-      "tags": [
-        "brasil",
-        "america do sul",
-        "galodoido",
-        "vaipracimadelesgalo"
-      ],
-      "activities": [
+var users = db.users.find().toArray()
+var atividades = db.activities.find().toArray()
+var qtdAtividades = db.activities.find().length()
+var quantidadeTotal = qtdAtividades - 1;
+var comentario = []
+
+function insertComment(index){
+
+  comentario.push({
+      "text": "Comentário inserido depois " + index,
+      "date_coment": Date.now(),
+
+      "members": [
         {
-          "name": "Ativiade 1",
-          "description": "description atividade",
-          "created_time": 1449527584078,
-          "comments": [
-            {
-              "text": "Comentário de teste 1",
-              "created_time": 1449527584078,
-              "members": [
-                {
-                  "user_id": ObjectId("566231164d3dcdd17f83d298")
-                },
-                {
-                  "user_id": ObjectId("566231234d3dcdd17f83d299")
-                },
-                {
-                  "user_id": ObjectId("566231324d3dcdd17f83d29a")
-                }
-              ],
-              "file": [ ]
-            },
-            {
-              "text": "Comentario do projeto 1 inserido depois",
-              "created_time": 1450049952760,
-              "members": [
-                {
-                  "user_id": ObjectId("5662313e4d3dcdd17f83d29b")
-                }
-              ]
-            }
-          ],
-          "historics": [ ]
-        },
-        {
-          "name": "Ativiade 2",
-          "description": "description atividade 2",
-          "created_time": 1449527584078,
-          "comments": [
-            {
-              "text": "Comentário de teste post 2",
-              "created_time": 1449527584078,
-              "members": [
-                {
-                  "user_id": ObjectId("566231164d3dcdd17f83d298")
-                },
-                {
-                  "user_id": ObjectId("566231234d3dcdd17f83d299")
-                },
-                {
-                  "user_id": ObjectId("566231324d3dcdd17f83d29a")
-                }
-              ],
-              "file": [ ]
-            }
-          ],
-          "historics": [ ]
+          "user_id": users[index]._id
         }
-      ]
-    }
-  ],
-  "views": 0
+      ],
+      "files": [ ]
+  })
+    
+  db.activities.update({ _id: atividades[index]._id }, { $push: { comments: comentario } });
 }
 
-
-
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var mod = { $push: 
-...   {"goals.0.activities.1.comments": 
-...     {
-...       "text": "Comentario do projeto 1 inserido depois na atividade 2",
-...       "created_time": Date.now(),
-...       "members": [{"user_id": ObjectId("5662313e4d3dcdd17f83d29b")}]
-...     }
-...   }
-... }
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> 
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var options = {upsert: true}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.update(query, mod, options)
-Updated 1 existing record(s) in 1ms
-WriteResult({
-  "nMatched": 1,
-  "nUpserted": 0,
-  "nModified": 1
-})
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.find(query)
-{
-  "_id": ObjectId("56660924661f1e8ea0aec016"),
-  "name": "Projeto 1",
-  "description": "projeto Instagram Mongo DB",
-  "created_time": 1449527584078,
-  "visible": 1,
-  "member": [
-    {
-      "user_id": ObjectId("566231164d3dcdd17f83d298")
-    },
-    {
-      "user_id": ObjectId("566231234d3dcdd17f83d299")
-    },
-    {
-      "user_id": ObjectId("566231324d3dcdd17f83d29a")
-    },
-    {
-      "user_id": ObjectId("5662313e4d3dcdd17f83d29b")
-    },
-    {
-      "user_id": ObjectId("5662314e4d3dcdd17f83d29c")
-    },
-    {
-      "user_id": ObjectId("566231594d3dcdd17f83d29d")
-    },
-    {
-      "user_id": ObjectId("566231644d3dcdd17f83d29e")
-    }
-  ],
-  "tags": [
-    "futebol",
-    "atletico",
-    "galo",
-    "tagdiferente1"
-  ],
-  "goals": [
-    {
-      "name": "goal inicial",
-      "description": "goal do primeiro projeto",
-      "created_time": 1449527584078,
-      "tags": [
-        "brasil",
-        "america do sul",
-        "galodoido",
-        "vaipracimadelesgalo"
-      ],
-      "activities": [
-        {
-          "name": "Ativiade 1",
-          "description": "description atividade",
-          "created_time": 1449527584078,
-          "comments": [
-            {
-              "text": "Comentário de teste 1",
-              "created_time": 1449527584078,
-              "members": [
-                {
-                  "user_id": ObjectId("566231164d3dcdd17f83d298")
-                },
-                {
-                  "user_id": ObjectId("566231234d3dcdd17f83d299")
-                },
-                {
-                  "user_id": ObjectId("566231324d3dcdd17f83d29a")
-                }
-              ],
-              "file": [ ]
-            },
-            {
-              "text": "Comentario do projeto 1 inserido depois",
-              "created_time": 1450049952760,
-              "members": [
-                {
-                  "user_id": ObjectId("5662313e4d3dcdd17f83d29b")
-                }
-              ]
-            }
-          ],
-          "historics": [ ]
-        },
-        {
-          "name": "Ativiade 2",
-          "description": "description atividade 2",
-          "created_time": 1449527584078,
-          "comments": [
-            {
-              "text": "Comentário de teste post 2",
-              "created_time": 1449527584078,
-              "members": [
-                {
-                  "user_id": ObjectId("566231164d3dcdd17f83d298")
-                },
-                {
-                  "user_id": ObjectId("566231234d3dcdd17f83d299")
-                },
-                {
-                  "user_id": ObjectId("566231324d3dcdd17f83d29a")
-                }
-              ],
-              "file": [ ]
-            },
-            {
-              "text": "Comentario do projeto 1 inserido depois na atividade 2",
-              "created_time": 1450050052140,
-              "members": [
-                {
-                  "user_id": ObjectId("5662313e4d3dcdd17f83d29b")
-                }
-              ]
-            }
-          ],
-          "historics": [ ]
-        }
-      ]
-    }
-  ],
-  "views": 0
+for (var i=0; i<quantidadeTotal; i++){
+  insertComment(i)
 }
-Fetched 1 record(s) in 3ms
 
-
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var query = {"_id": ObjectId("5666092f661f1e8ea0aec017")}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> 
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var mod = { $push: 
-...   {"goals.0.activities.0.comments": 
-...     {
-...       "text": "Comentario do projeto 2 inserido depois",
-...       "created_time": Date.now(),
-...       "members": [{"user_id": ObjectId("5662313e4d3dcdd17f83d29b")}]
-...     }
-...   }
-... }
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> 
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var options = {upsert: true}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.update(query, mod, options)
-Updated 1 existing record(s) in 1ms
-WriteResult({
-  "nMatched": 1,
-  "nUpserted": 0,
-  "nModified": 1
-})
-
-
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var mod = { $push: 
-...   {"goals.0.activities.1.comments": 
-...     {
-...       "text": "Comentario do projeto 2 inserido depois na atividade 2",
-...       "created_time": Date.now(),
-...       "members": [{"user_id": ObjectId("5662313e4d3dcdd17f83d29b")}]
-...     }
-...   }
-... }
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var options = {upsert: true}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.update(query, mod, options)
 Updated 1 existing record(s) in 2ms
-WriteResult({
-  "nMatched": 1,
-  "nUpserted": 0,
-  "nModified": 1
-})
-
-
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var query = {"_id": ObjectId("5666093e661f1e8ea0aec018")}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var mod = { $push: 
-...   {"goals.0.activities.0.comments": 
-...     {
-...       "text": "Comentario do projeto 3 inserido depois na atividade 1",
-...       "created_time": Date.now(),
-...       "members": [{"user_id": ObjectId("566231324d3dcdd17f83d29a")}]
-...     }
-...   }
-... }
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var options = {upsert: true}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.update(query, mod, options)
-Updated 1 existing record(s) in 1ms
-WriteResult({
-  "nMatched": 1,
-  "nUpserted": 0,
-  "nModified": 1
-})
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var mod = { $push: 
-...   {"goals.0.activities.1.comments": 
-...     {
-...       "text": "Comentario do projeto 3 inserido depois na atividade 2",
-...       "created_time": Date.now(),
-...       "members": [{"user_id": ObjectId("566231324d3dcdd17f83d29a")}]
-...     }
-...   }
-... }
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var options = {upsert: true}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.update(query, mod, options)
-Updated 1 existing record(s) in 1ms
-WriteResult({
-  "nMatched": 1,
-  "nUpserted": 0,
-  "nModified": 1
-})
-
-
-
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var query = {"_id": ObjectId("5666094e661f1e8ea0aec019")}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var mod = { $push: 
-...   {"goals.0.activities.0.comments": 
-...     {
-...       "text": "Comentario do projeto 4 inserido depois na atividade 1",
-...       "created_time": Date.now(),
-...       "members": [{"user_id": ObjectId("566231324d3dcdd17f83d29a")}]
-...     }
-...   }
-... }
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var options = {upsert: true}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.update(query, mod, options)
-Updated 1 existing record(s) in 1ms
-WriteResult({
-  "nMatched": 1,
-  "nUpserted": 0,
-  "nModified": 1
-})
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var query = {"_id": ObjectId("5666094e661f1e8ea0aec019")}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var mod = { $push: 
-...   {"goals.0.activities.1.comments": 
-...     {
-...       "text": "Comentario do projeto 4 inserido depois na atividade 2",
-...       "created_time": Date.now(),
-...       "members": [{"user_id": ObjectId("566231324d3dcdd17f83d29a")}]
-...     }
-...   }
-... }
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var options = {upsert: true}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.update(query, mod, options)
 Updated 1 existing record(s) in 2ms
-WriteResult({
-  "nMatched": 1,
-  "nUpserted": 0,
-  "nModified": 1
-})
+Updated 1 existing record(s) in 1ms
+Updated 1 existing record(s) in 1ms
 
 
 ```
@@ -2030,42 +931,56 @@ WriteResult({
 
 ```
 
- var query = {name: /Projeto UPSERT/i}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var mod = {
-...   $set: {visible: 1},
-...   $setOnInsert: {
-...   "name": "Projeto UPSERT",
-...   "description": "Nova inserção usando UPSERT",
-...   "created_time": Date.now(),
-...   "member": [],
-...   "tags": [],
-...   "goals": [],
-...   "views": 0
-...   }
-... }
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var options = {upsert: true}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.update(query, mod, options)
+var query = {name: /Projeto UPSERT/i}
+var mod = {
+  $set: {visible: 1},
+    $setOnInsert: {
+      "name": "Projeto UPSERT",
+      "description": "Nova inserção usando UPSERT",
+      "created_time": Date.now(),
+      "members" :
+      [
+        {
+          user_id: ObjectId("567854b0a5959e5d4718e594")
+        },
+        {
+          user_id: ObjectId("567854a9a5959e5d4718e593")
+        },
+        {
+          user_id: ObjectId("567854a2a5959e5d4718e592")
+        },
+        {
+          user_id: ObjectId("5678549aa5959e5d4718e591")
+        },
+        {
+          user_id: ObjectId("56785493a5959e5d4718e590")
+        }
+      ],
+      "tags": [],
+      "goals": [
+          {
+            "activities":
+            [
+              {
+                "activities_id": ObjectId("5678a90d3c5410e0b73e2839")
+              }
+            ]
+          }
+        ],
+      "views": 0
+    }
+}
+
+var options = {upsert: true}
+db.projects.update(query, mod, options)
+
 Updated 1 new record(s) in 2ms
 WriteResult({
   "nMatched": 0,
   "nUpserted": 1,
   "nModified": 0,
-  "_id": ObjectId("566e060314e28f1e78c38346")
+  "_id": ObjectId("5678a6623e07b0ff3a5ad172")
 })
-
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var query = {"_id": ObjectId("566e060314e28f1e78c38346")}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.find(query)
-{
-  "_id": ObjectId("566e060314e28f1e78c38346"),
-  "visible": 1,
-  "name": "Projeto UPSERT",
-  "description": "Nova inserção usando UPSERT",
-  "created_time": 1450051073817,
-  "member": [ ],
-  "tags": [ ],
-  "goals": [ ],
-  "views": 0
-}
 
 
 ```
@@ -2076,25 +991,14 @@ fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.find(query)
 
 ### 1 - Apague todos os projetos que não possuam tags.
 
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var query = {'tags.0': {$exists: false}}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.find(query)
-{
-  "_id": ObjectId("566e060314e28f1e78c38346"),
-  "visible": 1,
-  "name": "Projeto UPSERT",
-  "description": "Nova inserção usando UPSERT",
-  "created_time": 1450051073817,
-  "member": [ ],
-  "tags": [ ],
-  "goals": [ ],
-  "views": 0
-}
-Fetched 1 record(s) in 1ms
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.remove(query)
+var query = {'tags.0': {$exists: false}}
+db.projects.remove(query)
+
 Removed 1 record(s) in 1ms
 WriteResult({
   "nRemoved": 1
 })
+
 
 ```
 
@@ -2103,84 +1007,23 @@ WriteResult({
 
 ```
 
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var query = {'goals.activities.comments.0': {$exists: false}}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var fields = {goals: 1, name: 1}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.find(query, fields)
-{
-  "_id": ObjectId("56660958661f1e8ea0aec01a"),
-  "name": "Projeto 5",
-  "goals": [
-    {
-      "name": "goal 5",
-      "description": "goal 5 do projeto",
-      "created_time": 1449527637133,
-      "tags": [
-        "goal7",
-        "goal8",
-        "goal9"
-      ]
-    }
-  ]
+function item(recebeId){
+  db.projects.remove({"goals.activities.activities_id":  recebeId._id});
 }
-Fetched 1 record(s) in 1ms
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.remove(query)
-Removed 1 record(s) in 1ms
-WriteResult({
-  "nRemoved": 1
-})
 
-```
+db.activities.find({'comments.0': {$exists: false}}).forEach(item)
 
 
 ### 3 - Apague todos os projetos que não possuam atividades.
 
 ```
 
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var query = {'goals.activities': {$exists: false}}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.find(query)
-{
-  "_id": ObjectId("566e10b214e28f1e78c38348"),
-  "visible": 1,
-  "name": "Projeto NOVO 2",
-  "description": "Nova inserção para testes 2",
-  "created_time": 1450053808646,
-  "member": [
-    {
-      "user_id": ObjectId("566231844d3dcdd17f83d2a1")
-    },
-    {
-      "user_id": ObjectId("566e0f7ffdfa76611e9da1f5")
-    }
-  ],
-  "tags": [ ],
-  "goals": [ ],
-  "views": 0
-}
-{
-  "_id": ObjectId("566e111914e28f1e78c38349"),
-  "visible": 1,
-  "name": "Projeto NOVO 2",
-  "description": "Nova inserção para testes 3",
-  "created_time": 1450053912556,
-  "member": [
-    {
-      "user_id": ObjectId("566231844d3dcdd17f83d2a1")
-    },
-    {
-      "user_id": ObjectId("566231794d3dcdd17f83d2a0")
-    }
-  ],
-  "tags": [
-    "tag1"
-  ],
-  "goals": [ ],
-  "views": 0
-}
-Fetched 2 record(s) in 2ms
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.remove(query)
-Removed 2 record(s) in 1ms
+var query = {'goals.activities': {$exists: false}}
+db.projects.remove(query)
+
+Removed 1 record(s) in 34ms
 WriteResult({
-  "nRemoved": 2
+  "nRemoved": 1
 })
 
 
@@ -2190,25 +1033,19 @@ WriteResult({
 
 ```
 
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var usuarios = [{"user_id": ObjectId("566e0f69fdfa76611e9da1f4")},{"user_id": ObjectId("566e0f7ffdfa76611e9da1f5")}]
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var fields = {member:1, name: 1}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var query = {member: {$all: usuarios}}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.find(query, fields)
-{
-  "_id": ObjectId("566e108c14e28f1e78c38347"),
-  "name": "Projeto NOVO",
-  "member": [
-    {
-      "user_id": ObjectId("566e0f69fdfa76611e9da1f4")
-    },
-    {
-      "user_id": ObjectId("566e0f7ffdfa76611e9da1f5")
-    }
-  ]
-}
-Fetched 1 record(s) in 1ms
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.remove(query)
-Removed 1 record(s) in 1ms
+var usuarios = [
+  {
+    "user_id": ObjectId("567854b0a5959e5d4718e594")
+  },
+  {
+    "user_id": ObjectId("5678549aa5959e5d4718e591")
+  }
+]
+
+var query = {members: {$all: usuarios}}
+db.projects.remove(query)
+
+Removed 1 record(s) in 2ms
 WriteResult({
   "nRemoved": 1
 })
@@ -2220,131 +1057,14 @@ WriteResult({
 
 ```
 
- var query = {"goals.tags": {$in: ["goal4"]}}
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.find(query)
-{
-  "_id": ObjectId("5666094e661f1e8ea0aec019"),
-  "name": "Projeto 4",
-  "description": "projeto Instagram Mongo DB 4",
-  "created_time": 1449527623979,
-  "visible": 1,
-  "member": [
-    {
-      "user_id": ObjectId("5662313e4d3dcdd17f83d29b")
-    },
-    {
-      "user_id": ObjectId("566231594d3dcdd17f83d29d")
-    },
-    {
-      "user_id": ObjectId("566231644d3dcdd17f83d29e")
-    },
-    {
-      "user_id": ObjectId("566231704d3dcdd17f83d29f")
-    },
-    {
-      "user_id": ObjectId("566231794d3dcdd17f83d2a0")
-    },
-    {
-      "user_id": ObjectId("566231164d3dcdd17f83d298")
-    },
-    {
-      "user_id": ObjectId("566231844d3dcdd17f83d2a1")
-    }
-  ],
-  "tags": [
-    "tag4",
-    "tag5",
-    "tag6",
-    "tagdiferente5"
-  ],
-  "goals": [
-    {
-      "name": "goal 4",
-      "description": "goal 4 do projeto",
-      "created_time": 1449527623979,
-      "tags": [
-        "goal4",
-        "goal5",
-        "goal6"
-      ],
-      "activities": [
-        {
-          "name": "Ativiade 1 projeto 4",
-          "description": "description atividade 1 projeto 4",
-          "created_time": 1449527623979,
-          "comments": [
-            {
-              "text": "Comentário de teste 1 projeto 4",
-              "created_time": 1449527623979,
-              "members": [
-                {
-                  "user_id": ObjectId("5662313e4d3dcdd17f83d29b")
-                },
-                {
-                  "user_id": ObjectId("566231594d3dcdd17f83d29d")
-                },
-                {
-                  "user_id": ObjectId("566231644d3dcdd17f83d29e")
-                }
-              ],
-              "file": [ ]
-            },
-            {
-              "text": "Comentario do projeto 4 inserido depois na atividade 1",
-              "created_time": 1450050497413,
-              "members": [
-                {
-                  "user_id": ObjectId("566231324d3dcdd17f83d29a")
-                }
-              ]
-            }
-          ],
-          "historics": [ ]
-        },
-        {
-          "name": "Ativiade 2 do projeto 3",
-          "description": "description atividade 3",
-          "created_time": 1449527623979,
-          "comments": [
-            {
-              "text": "Comentário de teste post 3",
-              "created_time": 1449527623979,
-              "members": [
-                {
-                  "user_id": ObjectId("5662313e4d3dcdd17f83d29b")
-                },
-                {
-                  "user_id": ObjectId("566231594d3dcdd17f83d29d")
-                },
-                {
-                  "user_id": ObjectId("566231644d3dcdd17f83d29e")
-                }
-              ],
-              "file": [ ]
-            },
-            {
-              "text": "Comentario do projeto 4 inserido depois na atividade 2",
-              "created_time": 1450050518865,
-              "members": [
-                {
-                  "user_id": ObjectId("566231324d3dcdd17f83d29a")
-                }
-              ]
-            }
-          ],
-          "historics": [ ]
-        }
-      ]
-    }
-  ],
-  "views": 0
-}
-Fetched 1 record(s) in 4ms
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.projects.remove(query)
-Removed 1 record(s) in 1ms
+var query = {"goals.tags": {$in: ["golpe1"]}}
+db.projects.remove(query)
+
+Removed 1 record(s) in 2ms
 WriteResult({
   "nRemoved": 1
 })
+
 
 ```
 
@@ -2377,13 +1097,13 @@ Successfully added user: {
 ### 2 - Crie um usuário com permissões de Escrita e Leitura.
 
 ```
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.createUser(
-...   {
-...     user: "projectuser2",
-...     pwd: "user123",
-...     roles: [ { role: "readWrite", db: "admin"} ]
-...   }
-... )
+db.createUser(
+  {
+  user: "projectuser2",
+    pwd: "user123",
+    roles: [ { role: "readWrite", db: "admin"} ]
+  }
+)
 Successfully added user: {
   "user": "projectuser2",
   "roles": [
@@ -2401,12 +1121,12 @@ Successfully added user: {
 
 ```
 
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.runCommand( { grantRolesToUser: "projectuser2",
-...   roles: [
-...     { role: "userAdmin", db: "be-mean-projeto"}
-...   ],
-...   writeConcern: {}
-...  })
+db.runCommand( { grantRolesToUser: "projectuser2",
+  roles: [
+    { role: "userAdmin", db: "be-mean-projeto"}
+  ],
+  writeConcern: {}
+  })
 {
   "ok": 1
 }
@@ -2416,12 +1136,15 @@ fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.runCommand( { grantRolesTo
 ### 4 - Remover o papel grantRolesToUser para o usuário com Escrita e Leitura.
 
 ```
- be-mean-projeto> db.runCommand( { revokeRolesFromUser: "projectuser2",
-...   roles: [
-...     { role: "userAdmin", db: "be-mean-projeto"}
-...   ],
-...   writeConcern: {}
-... })
+db.runCommand(
+  {
+    revokeRolesFromUser: "projectuser2",
+    roles: [
+      { role: "userAdmin", db: "be-mean-projeto"}
+    ],
+    writeConcern: {}
+  }
+)
 {
   "ok": 1
 }
@@ -2433,10 +1156,11 @@ fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.runCommand( { grantRolesTo
 
 ```
 
-fabio-Inspiron-7520(mongod-3.0.7) admin> db.runCommand( { usersInfo: [ { user: "projectuser", db: "be-mean-projeto" }, { user: "projectuser2", db: "be-mean-projeto" } ],
-...   showCredentials: true,
-...   showPrivileges: true
-... } )
+db.runCommand( { usersInfo: [ { user: "projectuser", db: "be-mean-projeto" }, { user: "projectuser2", db: "be-mean-projeto" } ],
+showCredentials: true,
+showPrivileges: true
+} )
+
 {
   "users": [
     {
@@ -2665,51 +1389,68 @@ fabio-Inspiron-7520(mongod-3.0.7) admin> db.runCommand( { usersInfo: [ { user: "
 ```
 
 
-## Sharding
+## Cluster
+Depois de criada toda sua base você deverá criar um cluster utilizando:
+
+### (1) - 1 Router
+
+### (2) - 1 Config Server
+
+### (3) - 3 Shardings
+
+### (4) - 3 Replicas
 
 ```
 
-fabio@fabio-Inspiron-7520:/data$ mkdir configdb
+// Cria a pasta de configuração
+mkdir configdb
 
-fabio@fabio-Inspiron-7520:/data$ mongod --configsvr --port 27010
+// Inicia o confiServer
+mongod --configsvr --port 27010
 
-fabio@fabio-Inspiron-7520:/data$ mongos --configdb localhost:27010 --port 27011
+// faz o router em cima do server criado
+mongos --configdb localhost:27010 --port 27011
 
-fabio@fabio-Inspiron-7520:/data$ mkdir /data/shard1 && mkdir /data/shard2 && mkdir /data/shard3
+// cria os diretorios de shards
+mkdir /data/shard1 && mkdir /data/shard2 && mkdir /data/shard3
 
-fabio@fabio-Inspiron-7520:/data$ mongod --port 27013 --dbpath /data/shard2
+// inicia as guardas cada qual em sua porrta
+mongod --port 27012 --dbpath /data/shard1
+mongod --port 27013 --dbpath /data/shard2
+mongod --port 27014 --dbpath /data/shard3
 
-fabio@fabio-Inspiron-7520:/data$ mongod --port 27014 --dbpath /data/shard3
+// conectamos ao router e adicionamos as shards
+mongo --port 27011 --host localhost
 
-fabio@fabio-Inspiron-7520:/data$ mongo --port 27011 --host localhost
-MongoDB shell version: 3.0.7
-connecting to: localhost:27011/test
-Mongo-Hacker 0.0.8
-mongos> use be-mean-projeto
-switched to db be-mean-projeto
-
-mongos> sh.addShard("localhost:27012")
+// adiciona shard1
+sh.addShard("localhost:27012")
 {
   "shardAdded": "shard0000",
   "ok": 1
 }
-fabio-Inspiron-7520:27011(mongos-3.0.7)[mongos] be-mean-projeto> sh.addShard("localhost:27013")
+
+// adiciona shard2
+sh.addShard("localhost:27013")
 {
   "shardAdded": "shard0001",
   "ok": 1
 }
-fabio-Inspiron-7520:27011(mongos-3.0.7)[mongos] be-mean-projeto> sh.addShard("localhost:27014")
+
+// adiciona shard3
+sh.addShard("localhost:27014")
 {
   "shardAdded": "shard0002",
   "ok": 1
 }
 
-fabio-Inspiron-7520:27011(mongos-3.0.7)[mongos] be-mean-projeto> sh.enableSharding("be-mean-projeto")
+// Habilita Shardind em um determinado banco de dados (db)
+sh.enableSharding("be-mean-projeto")
 {
   "ok": 1
 }
 
-fabio-Inspiron-7520:27011(mongos-3.0.7)[mongos] be-mean-projeto> sh.shardCollection("be-mean-projeto.projects", {"_id": 1})
+// aponta qual a base será shardeada
+sh.shardCollection("be-mean-projeto.projects", {"_id": 1})
 {
   "collectionsharded": "be-mean-projeto.projects",
   "ok": 1
@@ -2717,32 +1458,33 @@ fabio-Inspiron-7520:27011(mongos-3.0.7)[mongos] be-mean-projeto> sh.shardCollect
 
 ```
 
-
 ## Replica
 
 ```
 
-fabio@fabio-Inspiron-7520:/data$ mkdir /data/rs1
+// Cria os diretorios para as réplicas
+mkdir /data/rs1
+mkdir /data/rs2
+mkdir /data/rs3
 
-fabio@fabio-Inspiron-7520:/data$ mkdir /data/rs2
-
-fabio@fabio-Inspiron-7520:/data$ mkdir /data/rs3
-
+// cria as replicas apontando para a porta e a pasta
 mongod --replSet replica_set --port 27117 --dbpath /data/rs1
 mongod --replSet replica_set --port 27118 --dbpath /data/rs2
 mongod --replSet replica_set --port 27119 --dbpath /data/rs3
 
-fabio@fabio-Inspiron-7520:~$ mongo --port 27117
+// conectamos com o mongo na replica primaria
+mongo --port 27117
 
-fabio-Inspiron-7520:27117(mongod-3.0.7) test> rsconf = {
-...    _id: "replica_set",
-...    members: [
-...     {
-...      _id: 0,
-...      host: "127.0.0.1:27117"
-...     }
-...   ]
-... }
+// adiciona as configurações da replicaset
+rsconf = {
+  _id: "replica_set",
+      members: [
+      {
+        _id: 0,
+        host: "127.0.0.1:27117"
+      }
+    ]
+}
 {
   "_id": "replica_set",
   "members": [
@@ -2752,22 +1494,27 @@ fabio-Inspiron-7520:27117(mongod-3.0.7) test> rsconf = {
     }
   ]
 }
-fabio-Inspiron-7520:27117(mongod-3.0.7) test> rs.initiate(rsconf)
+
+// inicia as configurações da replica set
+rs.initiate(rsconf)
 {
   "ok": 1
 }
 
-fabio-Inspiron-7520:27117(mongod-3.0.7)[PRIMARY:replica_set] test> rs.add("127.0.0.1:27118")
+//adiciona a replica 2 (secundária)
+rs.add("127.0.0.1:27118")
 {
   "ok": 1
 }
 
-fabio-Inspiron-7520:27117(mongod-3.0.7)[PRIMARY:replica_set] test> rs.add("127.0.0.1:27119")
+//adiciona a replica 3 (secundária)
+rs.add("127.0.0.1:27119")
 {
   "ok": 1
 }
 
-fabio-Inspiron-7520:27117(mongod-3.0.7)[PRIMARY:replica_set] test> rs.status()
+//Exibe status da replica
+rs.status()
 {
   "set": "replica_set",
   "date": ISODate("2015-12-14T23:34:57.196Z"),
