@@ -1,6 +1,6 @@
 # MongoDb - Projeto Final
 **Autor:** Fábio Reghim Calheiros
-**Data** 1450837082262
+**Data** 1451310807135
 
 ## Para qual sistema você usaria o MogoDB (diferente desse)?
 
@@ -9,6 +9,7 @@ Utilizando o MongoDB de forma correta, utilizando replicas e shards para garanti
 
 ## Qual a modelagem da sua coleção de `users`?
 
+```
 users: {
 	id,
 	type,
@@ -20,10 +21,12 @@ users: {
 	password,
 	lastAcess,
 	disable
-}	
+}
+```
 
 ## Qual a modelagem da sua coleção de `projects`?
 
+```
 projects: {
   id,
   name,
@@ -49,9 +52,10 @@ projects: {
     }]
   }]
 }
+```
 
-## Qual a modelagem da sua coleção retirada de 'projects'?
-
+## Qual a modelagem da sua coleção retirada de `projects`?
+```
 activities: {
   id,
   name,
@@ -67,7 +71,7 @@ activities: {
 
   historics: []
 }
-
+```
 ## Explicação de porque a modelagem foi feita dessa forma
 
 Ao meu ver, separando a coleção de usuários de projetos, e criando um relação entre si, é possivel se obeter eficiencia de tempo de resposta melhor.
@@ -75,7 +79,9 @@ Outro ponto positivo é facilidade com que podemos fazer requisições e obter r
 
 Exemplo, buscar todos os projetos de um usuário especifico.
 
+```
 db.projects.find({"member.user_id": ObjectId("566231164d3dcdd17f83d298")})
+```
 
 Caso contrário, não fosse feito dessa forma, uma busca como essa poderia não ser não só mais complicada como isso, como sua performance seria inifinitamente inferior.
 
@@ -87,174 +93,177 @@ Para que a consulta obtesse uma quantidade muito grande de informações ao se r
 ### 1 - Cadastre 10 usuários diferentes.
 
 ```
-
- var user1 = {
-... type: "user",
-... dateRegister: Date.now(),
-... username: "fabiocalheiros",
-... full_name: "Fábio Calheiros",
-... email: "fabiocalheiros@gmail.com",
-... bio: "Breve descrição",
-... avatarPath: "https://scontent-mia1-1.xx.fbcdn.net/hphotos-xpa1/v/t1.0-9/1381642_608172905891134_1368571562_n.jpg?oh=72d97e473608fa7907bf4bb4befa9b79&oe=56E46FB5",
-... password: 1,
-... lastAcess: Date.now(),
-... disable: 0
-... }
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.users.save(user1)
+var user1 = {
+  type: "user",
+  dateRegister: Date.now(),
+  username: "fabiocalheiros",
+  full_name: "Fábio Calheiros",
+  email: "fabiocalheiros@gmail.com",
+  bio: "Breve descrição",
+  avatarPath: "https://scontent-mia1-1.xx.fbcdn.net/hphotos-xpa1/v/t1.0-9/1381642_608172905891134_1368571562_n.jpg?oh=72d97e473608fa7907bf4bb4befa9b79&oe=56E46FB5",
+  password: 1,
+  lastAcess: Date.now(),
+  disable: 0
+}
+db.users.save(user1)
 Inserted 1 record(s) in 4ms
 WriteResult({
   "nInserted": 1
 })
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var user2 = {
-... type: "user",
-... dateRegister: Date.now(),
-... username: "chicao",
-... full_name: "Chico Cézar",
-... email: "todechico@gmail.com",
-... password: 2,
-... lastAcess: Date.now(),
-... disable: 0
-... }
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.users.save(user2)
+
+var user2 = {
+  type: "user",
+  dateRegister: Date.now(),
+  username: "chicao",
+  full_name: "Chico Cézar",
+  email: "todechico@gmail.com",
+  password: 2,
+  lastAcess: Date.now(),
+  disable: 0
+}
+db.users.save(user2)
 Inserted 1 record(s) in 2ms
 WriteResult({
   "nInserted": 1
 })
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var user3 = {
-... type: "user",
-... dateRegister: Date.now(),
-... username: "simsim",
-... full_name: "Simone Costa",
-... email: "simsim@ig.com.br",
-... password: 3,
-... lastAcess: Date.now(),
-... disable: 0
-... }
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.users.save(user3)
+
+var user3 = {
+  type: "user",
+  dateRegister: Date.now(),
+  username: "simsim",
+  full_name: "Simone Costa",
+  email: "simsim@ig.com.br",
+  password: 3,
+  lastAcess: Date.now(),
+  disable: 0
+}
+db.users.save(user3)
 Inserted 1 record(s) in 2ms
 WriteResult({
   "nInserted": 1
 })
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var user4 = {
-... type: "user",
-... dateRegister: Date.now(),
-... username: "skyzito",
-... full_name: "Diego Bolina",
-... email: "diego.bolina@gmail.com",
-... password: 4,
-... lastAcess: Date.now(),
-... disable: 0
-... }
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.users.save(user4)
+
+var user4 = {
+  type: "user",
+  dateRegister: Date.now(),
+  username: "skyzito",
+  full_name: "Diego Bolina",
+  email: "diego.bolina@gmail.com",
+  password: 4,
+  lastAcess: Date.now(),
+  disable: 0
+}
+db.users.save(user4)
 Inserted 1 record(s) in 2ms
 WriteResult({
   "nInserted": 1
 })
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var user5 = {
-... type: "user",
-... dateRegister: Date.now(),
-... username: "marcosenjoy",
-... full_name: "Marcos Enjoy",
-... email: "marcos.enjoy@gmail.com",
-... password: 5,
-... lastAcess: Date.now(),
-... disable: 0
-... }
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.users.save(user5)
+
+var user5 = {
+  type: "user",
+  dateRegister: Date.now(),
+  username: "marcosenjoy",
+  full_name: "Marcos Enjoy",
+  email: "marcos.enjoy@gmail.com",
+  password: 5,
+  lastAcess: Date.now(),
+  disable: 0
+}
+db.users.save(user5)
 Inserted 1 record(s) in 1ms
 WriteResult({
   "nInserted": 1
 })
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var user6 = {
-... type: "user",
-... dateRegister: Date.now(),
-... username: "bambirra",
-... full_name: "Matheus Menezes",
-... email: "menezesdebambirra@gmail.com",
-... password: 6,
-... lastAcess: Date.now(),
-... disable: 0
-... }
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.users.save(user6)
+
+var user6 = {
+  type: "user",
+  dateRegister: Date.now(),
+  username: "bambirra",
+  full_name: "Matheus Menezes",
+  email: "menezesdebambirra@gmail.com",
+  password: 6,
+  lastAcess: Date.now(),
+  disable: 0
+}
+db.users.save(user6)
 Inserted 1 record(s) in 1ms
 WriteResult({
   "nInserted": 1
 })
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var user7 = {
-... type: "user",
-... dateRegister: Date.now(),
-... username: "luizfelipe",
-... full_name: "Luiz Felipe",
-... email: "luiz.felipe@gmail.com",
-... password: 7,
-... lastAcess: Date.now(),
-... disable: 0
-... }
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.users.save(user7)
+
+var user7 = {
+  type: "user",
+  dateRegister: Date.now(),
+  username: "luizfelipe",
+  full_name: "Luiz Felipe",
+  email: "luiz.felipe@gmail.com",
+  password: 7,
+  lastAcess: Date.now(),
+  disable: 0
+}
+db.users.save(user7)
 Inserted 1 record(s) in 4ms
 WriteResult({
   "nInserted": 1
 })
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var user8 = {
-... type: "user",
-... dateRegister: Date.now(),
-... username: "lele84",
-... full_name: "Alessandra Negrine",
-... email: "lele.negrine@gmail.com",
-... password: 8,
-... lastAcess: Date.now(),
-... disable: 0
-... }
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.users.save(user8)
-Inserted 1 record(s) in 2ms
-WriteResult({
-  "nInserted": 1
-})
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var user9 = {
-... type: "user",
-... dateRegister: Date.now(),
-... username: "matheusaraujo",
-... full_name: "Mateus Vireira",
-... email: "ocarala@gmail.com",
-... password: 9,
-... lastAcess: Date.now(),
-... disable: 0
-... }
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.users.save(user9)
-Inserted 1 record(s) in 2ms
-WriteResult({
-  "nInserted": 1
-})
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> var user10 = {
-... type: "user",
-... dateRegister: Date.now(),
-... username: "usermagic",
-... full_name: "Usário Mágico",
-... email: "magic@gmail.com",
-... password: 10,
-... lastAcess: Date.now(),
-... disable: 0
-... }
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.users.save(user10)
+
+var user8 = {
+  type: "user",
+  dateRegister: Date.now(),
+  username: "lele84",
+  full_name: "Alessandra Negrine",
+  email: "lele.negrine@gmail.com",
+  password: 8,
+  lastAcess: Date.now(),
+  disable: 0
+}
+db.users.save(user8)
 Inserted 1 record(s) in 2ms
 WriteResult({
   "nInserted": 1
 })
 
+var user9 = {
+  type: "user",
+  dateRegister: Date.now(),
+  username: "matheusaraujo",
+  full_name: "Mateus Vireira",
+  email: "ocarala@gmail.com",
+  password: 9,
+  lastAcess: Date.now(),
+  disable: 0
+}
+db.users.save(user9)
+Inserted 1 record(s) in 2ms
+WriteResult({
+  "nInserted": 1
+})
 
+var user10 = {
+  type: "user",
+  dateRegister: Date.now(),
+  username: "usermagic",
+  full_name: "Usário Mágico",
+  email: "magic@gmail.com",
+  password: 10,
+  lastAcess: Date.now(),
+  disable: 0
+}
+db.users.save(user10)
+Inserted 1 record(s) in 2ms
+WriteResult({
+  "nInserted": 1
+})
 ```
 
 ### 2 - Cadastre 5 projetos diferentes.
 
 ```
-
 var project1 = {
-  
   name: "Projeto 1",
   description: "Descrição do projeto 1",
   created_time : Date.now(),
   visible: 1,
-
   members : [
     {
       user_id: ObjectId("5678546da5959e5d4718e58b")
@@ -272,9 +281,7 @@ var project1 = {
       user_id: ObjectId("5678548ba5959e5d4718e58f")
     }
   ],
-
   tags: ["futebol", "atletico", "galo", "brasil"],
-
   goals : [{
     name : "goal inicial",
     description: "goal do primeiro projeto",
@@ -294,14 +301,11 @@ var project1 = {
   }]
 }
 
-
 var project2 = {
-  
   name: "Projeto 2",
   description: "Descrição do projeto 2",
   created_time : Date.now(),
   visible: 1,
-
   members : [
     {
       user_id: ObjectId("567854b0a5959e5d4718e594")
@@ -326,9 +330,7 @@ var project2 = {
     name : "goal food track",
     description: "goal do segundo projeto",
     created_time : Date.now(),
-
     tags: ["goal1", "goal2", "goal3"],
-
     activities: [
       {
         "activities_id" : ObjectId("567875803c5410e0b73e2829")
@@ -341,14 +343,12 @@ var project2 = {
   }]
 }
 
-
 var project3 = {
   
   name: "Projeto 3",
   description: "Descrição do projeto 3",
   created_time : Date.now(),
   visible: 1,
-
   members : [
     {
       user_id: ObjectId("56785475a5959e5d4718e58c")
@@ -366,16 +366,12 @@ var project3 = {
       user_id: ObjectId("567854b0a5959e5d4718e594")
     }
   ],
-
   tags: ["nodejs", "angular", "express", "workshop"],
-
   goals : [{
     name : "Be mean",
     description: "goal do segundo projeto",
     created_time : Date.now(),
-
     tags: ["foda", "mongo", "noSql"],
-
     activities: [
       {
         "activities_id" : ObjectId("567875393c5410e0b73e2827")
@@ -388,14 +384,11 @@ var project3 = {
   }]
 }
 
-
 var project4 = {
-  
   name: "Projeto 4",
   description: "Descrição do projeto 4",
   created_time : Date.now(),
   visible: 1,
-
   members : [
     {
       user_id: ObjectId("567854a2a5959e5d4718e592")
@@ -413,16 +406,12 @@ var project4 = {
       user_id: ObjectId("56785475a5959e5d4718e58c")
     }
   ],
-
   tags: ["terra", "fogo", "agua", "workshop"],
-
   goals : [{
     name : "Pokemons",
     description: "Pokemon do capeta",
     created_time : Date.now(),
-
     tags: ["golpe1", "golpe2", "golpe3"],
-
     activities: [
       {
         "activities_id" : ObjectId("567874fd3c5410e0b73e2826")
@@ -435,14 +424,11 @@ var project4 = {
   }]
 }
 
-
 var project5 = {
-  
   name: "Projeto 5",
   description: "Descrição do projeto 5",
   created_time : Date.now(),
   visible: 1,
-
   members : [
     {
       user_id: ObjectId("56785475a5959e5d4718e58c")
@@ -460,9 +446,7 @@ var project5 = {
       user_id: ObjectId("567854a2a5959e5d4718e592")
     }
   ],
-
   tags: ["chuva", "sol", "vento", "workshop"],
-
   goals : [{
     name : "Goal do tempo",
     description: "Atmosfera Urbana",
@@ -474,25 +458,19 @@ var project5 = {
   }]
 }
 
-
 db.projects.insert(project1)
 db.projects.insert(project2)
 db.projects.insert(project3)
 db.projects.insert(project4)
 db.projects.insert(project5)
-
-
 ```
 
 
 ## Retrieve - busca
 
-```
-
 ### 1 - Liste as informações dos membros de 1 projeto específico que deve ser buscado pelo seu nome de forma a não ligar para maiúsculas e minúsculas.
 
 ```
-
 var project = {name: /projeto 1/i}
 var membros = [];
 var getUser = function (usuario) {
@@ -560,15 +538,11 @@ membros
     "disable": 0
   }
 ]
-
-
-
 ```
 
 ### 2 - Liste todos os projetos com a tag que você escolheu para os 3 projetos em comum.
 
 ```
-
 var query = {tags: {$in: [/workshop/i]}}
 var fields = {name: 1, tags: 1}
 db.projects.find(query, fields)
@@ -603,15 +577,12 @@ db.projects.find(query, fields)
   ]
 }
 Fetched 3 record(s) in 2ms
-
 ```
 
 ### 3 - Liste apenas os nomes de todas as atividades para todos os projetos.
 
 ```
-
 var arrayAtividades = [];
-
 var qtd = db.projects.find().length();
 
 var getAtividades = function (atividade) {
@@ -626,7 +597,6 @@ for (var i = 0; i < qtd; i++) {
     }
 }
 
-
 fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> arrayAtividades
 [
   "Ativiade 1",
@@ -638,14 +608,11 @@ fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> arrayAtividades
   "Ativiade 2",
   "Ativiade 4"
 ]
-
-
 ```
 
 ### 4 - Liste todos os projetos que não possuam uma tag.
 
 ```
-
 var query = {tags: {$nin: ['galo']}}
 var fields = {tags: 1, name: 1}
 db.projects.find(query, fields)
@@ -690,14 +657,11 @@ db.projects.find(query, fields)
   ]
 }
 Fetched 4 record(s) in 2ms
-
-
 ```
 
 ### 5 - Liste todos os usuários que não fazem parte do primeiro projeto cadastrado.
 
 ```
-
 var primeiro = db.projects.findOne();
 var membros = [];
 
@@ -709,7 +673,6 @@ var getMembro = function (member) {
 primeiro.members.forEach(getMembro);
 
 db.users.find({_id: { $not: { $in: membros }}})
-
 {
   "_id": ObjectId("56785493a5959e5d4718e590"),
   "type": "user",
@@ -766,8 +729,6 @@ db.users.find({_id: { $not: { $in: membros }}})
   "disable": 0
 }
 Fetched 5 record(s) in 2ms
-
-
 ```
 
 ## Update - alteração
@@ -775,19 +736,15 @@ Fetched 5 record(s) in 2ms
 ### 1 - Adicione para todos os projetos o campo views: 0.
 
 ```
-
 var query = {}
 var mod = {$set: {views: 0}}
 var options = {multi: true}
 db.projects.update(query, mod, options)
-
-
 ```
 
 ### 2 - Adicione 1 tag diferente para cada projeto.
 
 ```
-
 for (var i = 0; i < 5; i++) {
     var project = db.projects.find().skip(i).limit(1).toArray();
     var newTag = "Tag "+ i;
@@ -851,48 +808,39 @@ for (var i = 0; i < 5; i++) {
   ]
 }
 Fetched 5 record(s) in 2ms
-
-
 ```
 ### 3 - Adicione 2 membros diferentes para cada projeto.
 
 ```
-
 var query = {_id: ObjectId("56787c3d3c5410e0b73e282a")}
 var usuarios = [{"user_id": ObjectId("56789d723c5410e0b73e282f")}, {"user_id": ObjectId("56789d833c5410e0b73e2830")}]
 var mod = {$pushAll: {members: usuarios}}
 db.projects.update(query, mod)
-
 
 var query = {_id: ObjectId("56787c403c5410e0b73e282b")}
 var usuarios = [{"user_id": ObjectId("56789d913c5410e0b73e2831")}, {"user_id": ObjectId("56789d9d3c5410e0b73e2832")}]
 var mod = {$pushAll: {members: usuarios}}
 db.projects.update(query, mod)
 
-
 var query = {_id: ObjectId("56787c433c5410e0b73e282c")}
 var usuarios = [{"user_id": ObjectId("56789da93c5410e0b73e2833")}, {"user_id": ObjectId("56789db73c5410e0b73e2834")}]
 var mod = {$pushAll: {members: usuarios}}
 db.projects.update(query, mod)
-
 
 var query = {_id: ObjectId("56787c453c5410e0b73e282d")}
 var usuarios = [{"user_id": ObjectId("56789dc53c5410e0b73e2835")}, {"user_id": ObjectId("56789dd23c5410e0b73e2836")}]
 var mod = {$pushAll: {members: usuarios}}
 db.projects.update(query, mod)
 
-
 var query = {_id: ObjectId("56787c473c5410e0b73e282e")}
 var usuarios = [{"user_id": ObjectId("56789de13c5410e0b73e2837")}, {"user_id": ObjectId("56789df03c5410e0b73e2838")}]
 var mod = {$pushAll: {members: usuarios}}
 db.projects.update(query, mod)
-
-
 ```
+
 ### 4 - Adicione 1 comentário em cada atividade, deixe apenas 1 projeto sem.
 
 ```
-
 var users = db.users.find().toArray()
 var atividades = db.activities.find().toArray()
 var qtdAtividades = db.activities.find().length()
@@ -900,11 +848,9 @@ var quantidadeTotal = qtdAtividades - 1;
 var comentario = []
 
 function insertComment(index){
-
   comentario.push({
       "text": "Comentário inserido depois " + index,
       "date_coment": Date.now(),
-
       "members": [
         {
           "user_id": users[index]._id
@@ -912,7 +858,6 @@ function insertComment(index){
       ],
       "files": [ ]
   })
-    
   db.activities.update({ _id: atividades[index]._id }, { $push: { comments: comentario } });
 }
 
@@ -924,13 +869,11 @@ Updated 1 existing record(s) in 2ms
 Updated 1 existing record(s) in 2ms
 Updated 1 existing record(s) in 1ms
 Updated 1 existing record(s) in 1ms
-
-
 ```
+
 ### 5 - Adicione 1 projeto inteiro com UPSERT.
 
 ```
-
 var query = {name: /Projeto UPSERT/i}
 var mod = {
   $set: {visible: 1},
@@ -981,16 +924,13 @@ WriteResult({
   "nModified": 0,
   "_id": ObjectId("5678a6623e07b0ff3a5ad172")
 })
-
-
 ```
 
 ## Delete - remoção
 
-```
-
 ### 1 - Apague todos os projetos que não possuam tags.
 
+```
 var query = {'tags.0': {$exists: false}}
 db.projects.remove(query)
 
@@ -998,26 +938,22 @@ Removed 1 record(s) in 1ms
 WriteResult({
   "nRemoved": 1
 })
-
-
 ```
 
 
 ### 2 - Apague todos os projetos que não possuam comentários nas atividades.
 
 ```
-
 function item(recebeId){
   db.projects.remove({"goals.activities.activities_id":  recebeId._id});
 }
 
 db.activities.find({'comments.0': {$exists: false}}).forEach(item)
-
+```
 
 ### 3 - Apague todos os projetos que não possuam atividades.
 
 ```
-
 var query = {'goals.activities': {$exists: false}}
 db.projects.remove(query)
 
@@ -1025,14 +961,11 @@ Removed 1 record(s) in 34ms
 WriteResult({
   "nRemoved": 1
 })
-
-
 ```
 
 ### 4 - Escolha 2 usuários e apague todos os projetos em que os 2 fazem parte.
 
 ```
-
 var usuarios = [
   {
     "user_id": ObjectId("567854b0a5959e5d4718e594")
@@ -1049,14 +982,11 @@ Removed 1 record(s) in 2ms
 WriteResult({
   "nRemoved": 1
 })
-
-
 ```
 
 ### 5 - Apague todos os projetos que possuam uma determinada tag em goal.
 
 ```
-
 var query = {"goals.tags": {$in: ["golpe1"]}}
 db.projects.remove(query)
 
@@ -1064,8 +994,6 @@ Removed 1 record(s) in 2ms
 WriteResult({
   "nRemoved": 1
 })
-
-
 ```
 
 ## Gerenciamento de usuários
@@ -1073,14 +1001,13 @@ WriteResult({
 ### 1 - Crie um usuário com permissões APENAS de Leitura.
 
 ```
-
-fabio-Inspiron-7520(mongod-3.0.7) be-mean-projeto> db.createUser(
-...   {
-...     user: "projectuser",
-...     pwd: "user123",
-...     roles: [ { role: "read", db: "admin"} ]
-...   }
-... )
+db.createUser(
+  {
+  user: "projectuser",
+  pwd: "user123",
+  roles: [ { role: "read", db: "admin"} ]
+  }
+)
 Successfully added user: {
   "user": "projectuser",
   "roles": [
@@ -1090,8 +1017,6 @@ Successfully added user: {
     }
   ]
 }
-
-
 ```
 
 ### 2 - Crie um usuário com permissões de Escrita e Leitura.
@@ -1113,14 +1038,11 @@ Successfully added user: {
     }
   ]
 }
-
-
 ```
 
 ### 3 - Adicionar o papel grantRolesToUser e revokeRole para o usuário com Escrita e Leitura.
 
 ```
-
 db.runCommand( { grantRolesToUser: "projectuser2",
   roles: [
     { role: "userAdmin", db: "be-mean-projeto"}
@@ -1130,7 +1052,6 @@ db.runCommand( { grantRolesToUser: "projectuser2",
 {
   "ok": 1
 }
-
 ```
 
 ### 4 - Remover o papel grantRolesToUser para o usuário com Escrita e Leitura.
@@ -1148,14 +1069,11 @@ db.runCommand(
 {
   "ok": 1
 }
-
-
 ```
 
 ### 5 - Listar todos os usuários com seus papéis e ações.
 
 ```
-
 db.runCommand( { usersInfo: [ { user: "projectuser", db: "be-mean-projeto" }, { user: "projectuser2", db: "be-mean-projeto" } ],
 showCredentials: true,
 showPrivileges: true
@@ -1384,24 +1302,16 @@ showPrivileges: true
   ],
   "ok": 1
 }
-
-
 ```
-
 
 ## Cluster
 Depois de criada toda sua base você deverá criar um cluster utilizando:
-
 ### (1) - 1 Router
-
 ### (2) - 1 Config Server
-
 ### (3) - 3 Shardings
-
 ### (4) - 3 Replicas
 
 ```
-
 // Cria a pasta de configuração
 mkdir configdb
 
@@ -1455,13 +1365,11 @@ sh.shardCollection("be-mean-projeto.projects", {"_id": 1})
   "collectionsharded": "be-mean-projeto.projects",
   "ok": 1
 }
-
 ```
 
 ## Replica
 
 ```
-
 // Cria os diretorios para as réplicas
 mkdir /data/rs1
 mkdir /data/rs2
@@ -1567,5 +1475,4 @@ rs.status()
   ],
   "ok": 1
 }
-
 ```
